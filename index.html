@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +7,19 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #5D4037, #D7CCC8);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
         }
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #FFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .controls {
             display: flex;
@@ -24,489 +28,429 @@
             justify-content: center;
             margin-bottom: 20px;
         }
-        select, button {
-            padding: 12px 16px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: white;
-        }
-        button {
-            background: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
+        .controls label {
+            display: flex;
+            flex-direction: column;
             font-weight: bold;
         }
-        button:hover {
-            background: #2980b9;
+        .controls select,
+        .controls button {
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 5px;
         }
-        #chordName {
+        button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover:not(:disabled) {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .chord-name {
             text-align: center;
             font-size: 28px;
             font-weight: bold;
-            color: #e74c3c;
+            color: #FFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             margin: 20px 0;
-            min-height: 40px;
         }
-        #fretboard {
+        #chordCanvas {
             display: block;
-            margin: 20px auto;
-            border: 2px solid #34495e;
+            margin: 0 auto;
+            border: 4px solid #333;
+        }
+        #legend {
+            background: #FFF;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            line-height: 1.6;
+            text-align: left;
         }
         footer {
             text-align: center;
             margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
+            color: #FFF;
         }
         footer img {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 3px solid #3498db;
-            margin-bottom: 10px;
+            border: 3px solid #FFF;
         }
         footer p {
-            font-size: 14px;
-            color: #7f8c8d;
+            margin: 10px 0 0;
+            font-size: 18px;
+        }
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Diagrama de Acordes para Campo Harmônico</h1>
-    <div class="controls">
-        <select id="tonalidade"></select>
-        <select id="grau">
-            <option>I</option>
-            <option>II</option>
-            <option>III</option>
-            <option>IV</option>
-            <option>V</option>
-            <option>VI</option>
-            <option>VII</option>
-        </select>
-        <select id="modo">
-            <option>Maior</option>
-            <option>Menor Natural</option>
-            <option>Menor Harmônico</option>
-            <option>Menor Melódico</option>
-        </select>
-        <button id="gerar">GERAR DIAGRAMA</button>
+    <div class="container">
+        <h1>Diagrama de Acordes - Campo Harmônico</h1>
+        <div class="controls" id="controls">
+            <label>
+                Campo Harmônico:
+                <select id="modo">
+                    <option value="">Selecione...</option>
+                </select>
+            </label>
+            <label>
+                Tonalidade:
+                <select id="tonalidade" disabled>
+                    <option value="">Selecione modo primeiro</option>
+                </select>
+            </label>
+            <label>
+                Grau:
+                <select id="grau" disabled>
+                    <option value="">Selecione tonalidade</option>
+                </select>
+            </label>
+            <button id="generate" disabled>Gerar Diagrama</button>
+        </div>
+        <div id="chordName" class="chord-name" style="display: none;"></div>
+        <canvas id="chordCanvas" width="500" height="600" style="display: none;"></canvas>
+        <div id="legend" style="display: none;">
+            <strong>Legenda:</strong><br>
+            • Círculos numerados no topo: ordem de dedilhado (da corda mais grave para a mais aguda)<br>
+            • Círculos vermelhos: posição dos dedos nas casas<br>
+            • Número dentro do círculo vermelho: dedo (1=indicador, 2=médio, 3=anular, 4=mínimo)<br>
+            • ✕ = corda não deve ser tocada (abafada)<br>
+            • O = corda solta (aberta)<br>
+            • Números à esquerda: numeração das casas<br>
+            • Números na parte inferior: identificação das cordas (6=Mi grave a 1=Mi agudo)
+        </div>
+        <footer>
+            <img src="https://generated-images.adapta.one/eder_marcelo%40uol.com.br/019e219b-bdd9-73cc-9767-333bea86574b/2026-05-13T17-29-06-876Z_Transform_this_professional_photo_into_a_small_el.png" alt="Éder Marcelo Pontes Cunha">
+            <p>Desenvolvido por Éder Marcelo Pontes Cunha</p>
+        </footer>
     </div>
-    <h2 id="chordName">Selecione e gere o diagrama</h2>
-    <canvas id="fretboard" width="400" height="450"></canvas>
-    <footer>
-        <img src="https://generated-images.adapta.one/eder_marcelo%40uol.com.br/019e219b-bdd9-73cc-9767-333bea86574b/2026-05-13T17-29-06-876Z_Transform_this_professional_photo_into_a_small_el.png" alt="Ícone Éder Marcelo">
-        <p>Desenvolvido por Éder Marcelo Pontes Cunha</p>
-    </footer>
-
     <script>
-        const tonalidades = ['Dó', 'Sol', 'Ré', 'Lá', 'Mi', 'Si', 'Fá#', 'Dó#', 'Fá', 'Sib', 'Mib', 'Láb'];
-        const graus = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-        const modos = ['Maior', 'Menor Natural', 'Menor Harmônico', 'Menor Melódico'];
-        const stringLetters = ['E', 'A', 'D', 'G', 'B', 'e'];
-
-        const noteIndices = {
-            'Dó': 0, 'Sol': 7, 'Ré': 2, 'Lá': 9, 'Mi': 4, 'Si': 11,
-            'Fá#': 6, 'Dó#': 1, 'Fá': 5, 'Sib': 10, 'Mib': 3, 'Láb': 8
+        const noteNames = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+        const ptNoteNames = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si'];
+        const enToPtNote = {
+            'C': 'Dó',
+            'C#': 'Dó#',
+            'Db': 'Dó#',
+            'D': 'Ré',
+            'D#': 'Ré#',
+            'Eb': 'Mib',
+            'E': 'Mi',
+            'F': 'Fá',
+            'F#': 'Fá#',
+            'Gb': 'Fá#',
+            'G': 'Sol',
+            'G#': 'Sol#',
+            'Ab': 'Láb',
+            'A': 'Lá',
+            'A#': 'Lá#',
+            'Bb': 'Sib',
+            'B': 'Si'
         };
-
-        const sharpNoteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-        const flatNoteNames = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-
-        const sharpTonalities = ['Dó', 'Sol', 'Ré', 'Lá', 'Mi', 'Si', 'Fá#', 'Dó#'];
-
-        const majSteps = [0, 2, 4, 5, 7, 9, 11];
-        const natMinSteps = [0, 2, 3, 5, 7, 8, 10];
-        const harmMinSteps = [0, 2, 3, 5, 7, 8, 11];
-        const melMinSteps = [0, 2, 3, 5, 7, 9, 11];
-
-        const scaleSteps = {
-            'Maior': majSteps,
-            'Menor Natural': natMinSteps,
-            'Menor Harmônico': harmMinSteps,
-            'Menor Melódico': melMinSteps
-        };
-
-        const qualities = {
-            'Maior': ['7M', 'm7', 'm7', '7M', '7', 'm7', 'm7(b5)'],
-            'Menor Natural': ['m7', 'm7(b5)', '7M', 'm7', 'm7', '7M', '7'],
-            'Menor Harmônico': ['m7', 'm7(b5)', '7M', 'm7', '7', '7M', 'm7(b5)'],
-            'Menor Melódico': ['m7', 'm7', '7M', '7', '7', 'm7(b5)', 'm7(b5)']
-        };
-
-        const chordList = [
-            // Dó
-            {key:'Dó',deg:'I',name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
-            {key:'Dó',deg:'II',name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
-            {key:'Dó',deg:'III',name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
-            {key:'Dó',deg:'IV',name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
-            {key:'Dó',deg:'V',name:'G7',pos:[3,2,0,0,0,1],dig:[2,1,0,0,0,3]},
-            {key:'Dó',deg:'VI',name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
-            {key:'Dó',deg:'VII',name:'Bm7(b5)',pos:[99,2,3,3,3,99],dig:[0,1,2,3,4,0]},
-            // Sol
-            {key:'Sol',deg:'I',name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
-            {key:'Sol',deg:'II',name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
-            {key:'Sol',deg:'III',name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
-            {key:'Sol',deg:'IV',name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
-            {key:'Sol',deg:'V',name:'D7',pos:[99,99,0,2,1,2],dig:[0,0,0,2,1,2]},
-            {key:'Sol',deg:'VI',name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
-            {key:'Sol',deg:'VII',name:'F#m7(b5)',pos:[2,99,2,3,3,99],dig:[1,0,1,2,3,0]},
-            // Ré
-            {key:'Ré',deg:'I',name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
-            {key:'Ré',deg:'II',name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
-            {key:'Ré',deg:'III',name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
-            {key:'Ré',deg:'IV',name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
-            {key:'Ré',deg:'V',name:'A7',pos:[99,0,2,0,2,0],dig:[0,0,2,0,2,0]},
-            {key:'Ré',deg:'VI',name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
-            {key:'Ré',deg:'VII',name:'C#m7(b5)',pos:[99,4,5,5,5,99],dig:[0,1,2,3,4,0]},
-            // Lá
-            {key:'Lá',deg:'I',name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
-            {key:'Lá',deg:'II',name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
-            {key:'Lá',deg:'III',name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
-            {key:'Lá',deg:'IV',name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
-            {key:'Lá',deg:'V',name:'E7',pos:[0,2,0,1,0,0],dig:[0,2,0,1,0,0]},
-            {key:'Lá',deg:'VI',name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
-            {key:'Lá',deg:'VII',name:'G#m7(b5)',pos:[4,99,4,5,5,99],dig:[1,0,1,2,3,0]},
-            // Mi
-            {key:'Mi',deg:'I',name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Mi',deg:'II',name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
-            {key:'Mi',deg:'III',name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
-            {key:'Mi',deg:'IV',name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
-            {key:'Mi',deg:'V',name:'B7',pos:[99,2,1,2,0,2],dig:[0,2,1,3,0,4]},
-            {key:'Mi',deg:'VI',name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
-            {key:'Mi',deg:'VII',name:'D#m7(b5)',pos:[99,6,7,7,7,99],dig:[0,1,2,3,4,0]},
-            // Si
-            {key:'Si',deg:'I',name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Si',deg:'II',name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
-            {key:'Si',deg:'III',name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
-            {key:'Si',deg:'IV',name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Si',deg:'V',name:'F#7',pos:[2,4,2,3,2,2],dig:[1,3,1,2,1,1]},
-            {key:'Si',deg:'VI',name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
-            {key:'Si',deg:'VII',name:'A#m7(b5)',pos:[6,99,6,7,7,99],dig:[1,0,1,2,3,0]},
-            // Fá#
-            {key:'Fá#',deg:'I',name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
-            {key:'Fá#',deg:'II',name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
-            {key:'Fá#',deg:'III',name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
-            {key:'Fá#',deg:'IV',name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Fá#',deg:'V',name:'C#7',pos:[99,4,3,4,2,99],dig:[0,2,1,3,1,0]},
-            {key:'Fá#',deg:'VI',name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
-            {key:'Fá#',deg:'VII',name:'E#m7(b5)',pos:[99,8,9,9,9,99],dig:[0,1,2,3,4,0]},
-            // Dó#
-            {key:'Dó#',deg:'I',name:'C#7M',pos:[99,4,3,3,2,2],dig:[0,3,2,2,1,1]},
-            {key:'Dó#',deg:'II',name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
-            {key:'Dó#',deg:'III',name:'E#m7',pos:[99,8,6,6,6,99],dig:[0,3,1,1,1,0]},
-            {key:'Dó#',deg:'IV',name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
-            {key:'Dó#',deg:'V',name:'G#7',pos:[4,6,4,5,4,4],dig:[1,3,1,2,1,1]},
-            {key:'Dó#',deg:'VI',name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
-            {key:'Dó#',deg:'VII',name:'B#m7(b5)',pos:[99,11,10,9,9,99],dig:[0,4,3,2,2,0]},
-            // Fá
-            {key:'Fá',deg:'I',name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
-            {key:'Fá',deg:'II',name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
-            {key:'Fá',deg:'III',name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
-            {key:'Fá',deg:'IV',name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
-            {key:'Fá',deg:'V',name:'C7',pos:[99,3,2,3,1,0],dig:[0,3,2,3,1,0]},
-            {key:'Fá',deg:'VI',name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
-            {key:'Fá',deg:'VII',name:'Em7(b5)',pos:[0,1,2,0,3,99],dig:[0,1,2,0,3,0]},
-            // Sib
-            {key:'Sib',deg:'I',name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
-            {key:'Sib',deg:'II',name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
-            {key:'Sib',deg:'III',name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
-            {key:'Sib',deg:'IV',name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
-            {key:'Sib',deg:'V',name:'F7',pos:[1,3,1,2,1,1],dig:[1,3,1,2,1,1]},
-            {key:'Sib',deg:'VI',name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
-            {key:'Sib',deg:'VII',name:'Am7(b5)',pos:[99,1,2,0,3,99],dig:[0,1,2,0,3,0]},
-            // Mib
-            {key:'Mib',deg:'I',name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
-            {key:'Mib',deg:'II',name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
-            {key:'Mib',deg:'III',name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
-            {key:'Mib',deg:'IV',name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
-            {key:'Mib',deg:'V',name:'Bb7',pos:[99,1,3,1,3,1],dig:[0,1,3,1,3,1]},
-            {key:'Mib',deg:'VI',name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
-            {key:'Mib',deg:'VII',name:'Dm7(b5)',pos:[99,99,0,1,1,99],dig:[0,0,0,1,1,0]},
-            // Láb
-            {key:'Láb',deg:'I',name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
-            {key:'Láb',deg:'II',name:'Bbm7',pos:[99,1,3,1,1,99],dig:[0,1,3,1,1,0]},
-            {key:'Láb',deg:'III',name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
-            {key:'Láb',deg:'IV',name:'Db7M',pos:[99,4,3,3,2,99],dig:[0,3,2,2,1,0]},
-            {key:'Láb',deg:'V',name:'Eb7',pos:[99,99,1,3,2,3],dig:[0,0,1,3,2,3]},
-            {key:'Láb',deg:'VI',name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
-            {key:'Láb',deg:'VII',name:'Gm7(b5)',pos:[3,99,3,4,4,99],dig:[1,0,1,2,3,0]}
+        const sharpKeys = ['Dó','Sol','Ré','Lá','Mi','Si','Fá#','Dó#'];
+        const flatKeys = ['Fá','Sib','Mib','Láb'];
+        const chords = [
+            {key:'Dó',deg:1,name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
+            {key:'Dó',deg:2,name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
+            {key:'Dó',deg:3,name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
+            {key:'Dó',deg:4,name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
+            {key:'Dó',deg:5,name:'G7',pos:[3,2,0,0,0,1],dig:[2,1,0,0,0,3]},
+            {key:'Dó',deg:6,name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
+            {key:'Dó',deg:7,name:'Bm7(b5)',pos:[99,2,3,3,3,99],dig:[0,1,2,3,4,0]},
+            {key:'Sol',deg:1,name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
+            {key:'Sol',deg:2,name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
+            {key:'Sol',deg:3,name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
+            {key:'Sol',deg:4,name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
+            {key:'Sol',deg:5,name:'D7',pos:[99,99,0,2,1,2],dig:[0,0,0,2,1,2]},
+            {key:'Sol',deg:6,name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
+            {key:'Sol',deg:7,name:'F#m7(b5)',pos:[2,99,2,3,3,99],dig:[1,0,1,2,3,0]},
+            {key:'Ré',deg:1,name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
+            {key:'Ré',deg:2,name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
+            {key:'Ré',deg:3,name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
+            {key:'Ré',deg:4,name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
+            {key:'Ré',deg:5,name:'A7',pos:[99,0,2,0,2,0],dig:[0,0,2,0,2,0]},
+            {key:'Ré',deg:6,name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
+            {key:'Ré',deg:7,name:'C#m7(b5)',pos:[99,4,5,5,5,99],dig:[0,1,2,3,4,0]},
+            {key:'Lá',deg:1,name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
+            {key:'Lá',deg:2,name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
+            {key:'Lá',deg:3,name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
+            {key:'Lá',deg:4,name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
+            {key:'Lá',deg:5,name:'E7',pos:[0,2,0,1,0,0],dig:[0,2,0,1,0,0]},
+            {key:'Lá',deg:6,name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
+            {key:'Lá',deg:7,name:'G#m7(b5)',pos:[4,99,4,5,5,99],dig:[1,0,1,2,3,0]},
+            {key:'Mi',deg:1,name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Mi',deg:2,name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
+            {key:'Mi',deg:3,name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
+            {key:'Mi',deg:4,name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
+            {key:'Mi',deg:5,name:'B7',pos:[99,2,1,2,0,2],dig:[0,2,1,3,0,4]},
+            {key:'Mi',deg:6,name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
+            {key:'Mi',deg:7,name:'D#m7(b5)',pos:[99,6,7,7,7,99],dig:[0,1,2,3,4,0]},
+            {key:'Si',deg:1,name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Si',deg:2,name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
+            {key:'Si',deg:3,name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
+            {key:'Si',deg:4,name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Si',deg:5,name:'F#7',pos:[2,4,2,3,2,2],dig:[1,3,1,2,1,1]},
+            {key:'Si',deg:6,name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
+            {key:'Si',deg:7,name:'A#m7(b5)',pos:[6,99,6,7,7,99],dig:[1,0,1,2,3,0]},
+            {key:'Fá#',deg:1,name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
+            {key:'Fá#',deg:2,name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
+            {key:'Fá#',deg:3,name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
+            {key:'Fá#',deg:4,name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Fá#',deg:5,name:'C#7',pos:[99,4,3,4,2,99],dig:[0,2,1,3,1,0]},
+            {key:'Fá#',deg:6,name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
+            {key:'Fá#',deg:7,name:'E#m7(b5)',pos:[99,8,9,9,9,99],dig:[0,1,2,3,4,0]},
+            {key:'Dó#',deg:1,name:'C#7M',pos:[99,4,3,3,2,2],dig:[0,3,2,2,1,1]},
+            {key:'Dó#',deg:2,name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
+            {key:'Dó#',deg:3,name:'E#m7',pos:[99,8,6,6,6,99],dig:[0,3,1,1,1,0]},
+            {key:'Dó#',deg:4,name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
+            {key:'Dó#',deg:5,name:'G#7',pos:[4,6,4,5,4,4],dig:[1,3,1,2,1,1]},
+            {key:'Dó#',deg:6,name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
+            {key:'Dó#',deg:7,name:'B#m7(b5)',pos:[99,11,10,9,9,99],dig:[0,4,3,2,2,0]},
+            {key:'Fá',deg:1,name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
+            {key:'Fá',deg:2,name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
+            {key:'Fá',deg:3,name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
+            {key:'Fá',deg:4,name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
+            {key:'Fá',deg:5,name:'C7',pos:[99,3,2,3,1,0],dig:[0,3,2,3,1,0]},
+            {key:'Fá',deg:6,name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
+            {key:'Fá',deg:7,name:'Em7(b5)',pos:[0,1,2,0,3,99],dig:[0,1,2,0,3,0]},
+            {key:'Sib',deg:1,name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
+            {key:'Sib',deg:2,name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
+            {key:'Sib',deg:3,name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
+            {key:'Sib',deg:4,name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
+            {key:'Sib',deg:5,name:'F7',pos:[1,3,1,2,1,1],dig:[1,3,1,2,1,1]},
+            {key:'Sib',deg:6,name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
+            {key:'Sib',deg:7,name:'Am7(b5)',pos:[99,1,2,0,3,99],dig:[0,1,2,0,3,0]},
+            {key:'Mib',deg:1,name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
+            {key:'Mib',deg:2,name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
+            {key:'Mib',deg:3,name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
+            {key:'Mib',deg:4,name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
+            {key:'Mib',deg:5,name:'Bb7',pos:[99,1,3,1,3,1],dig:[0,1,3,1,3,1]},
+            {key:'Mib',deg:6,name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
+            {key:'Mib',deg:7,name:'Dm7(b5)',pos:[99,99,0,1,1,99],dig:[0,0,0,1,1,0]},
+            {key:'Láb',deg:1,name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
+            {key:'Láb',deg:2,name:'Bbm7',pos:[99,1,3,1,1,99],dig:[0,1,3,1,1,0]},
+            {key:'Láb',deg:3,name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
+            {key:'Láb',deg:4,name:'Db7M',pos:[99,4,3,3,2,99],dig:[0,3,2,2,1,0]},
+            {key:'Láb',deg:5,name:'Eb7',pos:[99,99,1,3,2,3],dig:[0,0,1,3,2,3]},
+            {key:'Láb',deg:6,name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
+            {key:'Láb',deg:7,name:'Gm7(b5)',pos:[3,99,3,4,4,99],dig:[1,0,1,2,3,0]}
         ];
-
-        let chords = {};
-        let fingeringsByName = {};
-        let currentPos = null;
-        let currentDig = null;
-
-        function getChordName(ton, grau, mod) {
-            const degIdx = graus.indexOf(grau);
-            if (degIdx === -1) return null;
-            const base = noteIndices[ton];
-            const steps = scaleSteps[mod];
-            const qualList = qualities[mod];
-            const offset = steps[degIdx];
-            const rootIdx = (base + offset) % 12;
-            const isSharpKey = sharpTonalities.includes(ton);
-            const noteNames = isSharpKey ? sharpNoteNames : flatNoteNames;
-            const root = noteNames[rootIdx];
-            const qual = qualList[degIdx];
-            return root + qual;
+        const modoSel = document.getElementById('modo');
+        const tonSel = document.getElementById('tonalidade');
+        const grauSel = document.getElementById('grau');
+        const btn = document.getElementById('generate');
+        const chordNameDiv = document.getElementById('chordName');
+        const canvas = document.getElementById('chordCanvas');
+        const ctx = canvas.getContext('2d');
+        const legend = document.getElementById('legend');
+        const graus = ['I','II','III','IV','V','VI','VII'];
+        ['Maior','Menor Natural','Menor Harmônico','Menor Melódico'].forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m;
+            opt.textContent = m;
+            modoSel.appendChild(opt);
+        });
+        function getPtChordName(enName) {
+            const noteMatch = enName.match(/^([A-Ga-g][#b]?)/i);
+            if (!noteMatch) return enName;
+            const enNote = noteMatch[1].toUpperCase();
+            const ptNote = enToPtNote[enNote];
+            if (!ptNote) return enName;
+            const qual = enName.slice(noteMatch[0].length);
+            return ptNote + qual;
         }
-
-        function generateDiagram() {
-            const ton = document.getElementById('tonalidade').value;
-            const grauSel = document.getElementById('grau').value;
-            const mod = document.getElementById('modo').value;
-            let displayName, pos, dig;
-
-            if (mod === 'Maior') {
-                const kd = ton + '-' + grauSel;
-                const chord = chords[kd];
-                if (chord) {
-                    displayName = chord.name;
-                    pos = chord.pos;
-                    dig = chord.dig;
-                } else {
-                    displayName = 'Acorde não encontrado';
-                    pos = null;
-                }
-            } else {
-                const compName = getChordName(ton, grauSel, mod);
-                displayName = compName;
-                const fing = fingeringsByName[compName];
-                if (fing) {
-                    pos = fing.pos;
-                    dig = fing.dig;
-                } else {
-                    displayName += ' - Consulte digitação';
-                    pos = null;
-                }
-            }
-
-            document.getElementById('chordName').textContent = displayName;
-            currentPos = pos;
-            currentDig = dig;
-            const canvas = document.getElementById('fretboard');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (pos) {
-                drawDiagram(ctx, pos, dig, canvas.width, canvas.height);
-            }
+        function hideDiagram() {
+            chordNameDiv.style.display = 'none';
+            canvas.style.display = 'none';
+            legend.style.display = 'none';
         }
-
-        function drawDiagram(ctx, pos, dig, w, h) {
-            // Compute maxFret and played
-            let maxFret = 0;
-            for (let p of pos) {
-                if (p > 0) maxFret = Math.max(maxFret, p);
-            }
-            const numFrets = Math.max(5, maxFret);
-            const played = [];
-            for (let i = 0; i < 6; i++) {
-                if (pos[i] !== 99) played.push(i);
-            }
-
-            const baseW = 400;
-            const scale = w / baseW;
-
-            const marginL = 50 * scale;
-            const marginR = 20 * scale;
-            const marginT = 70 * scale;
-            const marginB = 90 * scale;
-            const fbW = w - marginL - marginR;
-            const fbH = h - marginT - marginB;
-            const space = fbH / numFrets;
-
-            const yLines = [];
-            for (let k = 0; k <= numFrets; k++) {
-                yLines[k] = marginT + k * space;
-            }
-
-            const strGap = fbW / 5;
-            const strX = [];
-            for (let i = 0; i < 6; i++) {
-                strX[i] = marginL + i * strGap;
-            }
-
-            // Wood gradient background
-            const grad = ctx.createLinearGradient(0, 0, 0, h);
-            grad.addColorStop(0, '#5D4037');
-            grad.addColorStop(0.3, '#8D6E63');
-            grad.addColorStop(0.7, '#A1887F');
-            grad.addColorStop(1, '#D7CCC8');
+        function drawChord(pos, dig) {
+            const W = 500, H = 600;
+            ctx.clearRect(0, 0, W, H);
+            const grad = ctx.createLinearGradient(0, 0, 0, H);
+            grad.addColorStop(0, '#8D6E63');
+            grad.addColorStop(0.5, '#6D4C41');
+            grad.addColorStop(1, '#4E342E');
             ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, w, h);
-
-            // Nut
-            ctx.strokeStyle = 'rgba(0,0,0,0.9)';
-            ctx.lineWidth = 6 * scale;
+            ctx.fillRect(0, 0, W, H);
+            const marginL = 55;
+            const marginR = 25;
+            const marginT = 70;
+            const marginB = 100;
+            const fbW = W - marginL - marginR;
+            const fbH = H - marginT - marginB;
+            const stringGap = fbW / 5;
+            const strX = [];
+            for (let i = 0; i < 6; i++) strX[i] = marginL + i * stringGap;
+            let maxFret = 0;
+            for (let p of pos) if (p > 0 && p > maxFret) maxFret = p;
+            const numFrets = Math.max(5, maxFret);
+            const fretH = fbH / numFrets;
+            const nutY = marginT;
+            ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+            ctx.lineWidth = 8;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
-            ctx.moveTo(marginL, yLines[0]);
-            ctx.lineTo(marginL + fbW, yLines[0]);
+            ctx.moveTo(marginL, nutY);
+            ctx.lineTo(marginL + fbW, nutY);
             ctx.stroke();
-
-            // Frets
-            ctx.lineWidth = 3 * scale;
-            for (let k = 1; k <= numFrets; k++) {
+            ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+            ctx.lineWidth = 3;
+            for (let f = 1; f <= numFrets; f++) {
+                const y = nutY + f * fretH;
                 ctx.beginPath();
-                ctx.moveTo(marginL, yLines[k]);
-                ctx.lineTo(marginL + fbW, yLines[k]);
+                ctx.moveTo(marginL, y);
+                ctx.lineTo(marginL + fbW, y);
                 ctx.stroke();
             }
-
-            // Strings (only played)
-            ctx.strokeStyle = 'rgba(101,67,33,0.8)';
+            ctx.strokeStyle = 'rgba(0,0,0,0.6)';
             for (let i = 0; i < 6; i++) {
                 if (pos[i] !== 99) {
-                    ctx.lineWidth = (4 - i * 0.4) * scale;
+                    ctx.lineWidth = 3.5 - i * 0.3;
+                    ctx.lineCap = 'round';
                     ctx.beginPath();
-                    ctx.moveTo(strX[i], yLines[0]);
-                    ctx.lineTo(strX[i], yLines[numFrets]);
+                    ctx.moveTo(strX[i], nutY);
+                    ctx.lineTo(strX[i], nutY + numFrets * fretH);
                     ctx.stroke();
                 }
             }
-
-            // Fret numbers on left
-            ctx.fillStyle = 'black';
-            ctx.font = `bold ${16 * scale}px sans-serif`;
+            ctx.fillStyle = '#FFF';
+            ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
             for (let f = 1; f <= numFrets; f++) {
-                ctx.fillText(f.toString(), marginL - 8 * scale, yLines[f]);
+                ctx.fillText(f.toString(), marginL - 10, nutY + f * fretH);
             }
-
-            // Top indicators
-            const yTop = marginT - 35 * scale;
+            const topY = marginT - 25;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            let strumSeq = 0;
+            for (let i = 0; i < 6; i++) {
+                if (pos[i] === 99) {
+                    ctx.fillStyle = '#FFF';
+                    ctx.font = 'bold 30px Arial';
+                    ctx.fillText('✕', strX[i], topY);
+                } else {
+                    strumSeq++;
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.arc(strX[i], topY, 14, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = '#FFF';
+                    ctx.font = 'bold 18px Arial';
+                    ctx.fillText(strumSeq.toString(), strX[i], topY);
+                }
+            }
+            ctx.fillStyle = '#FFF';
+            ctx.font = 'bold 22px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             for (let i = 0; i < 6; i++) {
-                const cx = strX[i];
-                const cy = yTop;
-                if (pos[i] === 99) {
-                    // ×
-                    ctx.font = `bold ${28 * scale}px Arial`;
-                    ctx.fillStyle = 'black';
-                    ctx.fillText('×', cx, cy);
-                } else {
-                    // Strum seq circle
-                    const seq = played.indexOf(i) + 1;
-                    ctx.fillStyle = 'black';
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, 14 * scale, 0, 2 * Math.PI);
-                    ctx.fill();
-                    // Number
-                    ctx.fillStyle = 'white';
-                    ctx.font = `bold ${20 * scale}px Arial`;
-                    ctx.fillText(seq.toString(), cx, cy);
-                }
-            }
-
-            // Open strings O
-            ctx.font = `bold ${20 * scale}px Arial`;
-            ctx.fillStyle = 'white';
-            for (let i = 0; i < 6; i++) {
                 if (pos[i] === 0) {
-                    ctx.fillText('O', strX[i], yLines[0] + space * 0.5);
+                    ctx.fillText('O', strX[i], nutY + fretH * 0.5);
                 }
             }
-
-            // Finger positions
             for (let i = 0; i < 6; i++) {
                 if (pos[i] > 0) {
-                    const fy = yLines[pos[i]];
+                    const fy = nutY + pos[i] * fretH;
                     const fx = strX[i];
-                    // Red circle
-                    ctx.fillStyle = 'red';
+                    ctx.fillStyle = '#DC143C';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, 12 * scale, 0, 2 * Math.PI);
+                    ctx.arc(fx, fy, 11, 0, 2 * Math.PI);
                     ctx.fill();
-                    // Finger number
+                    ctx.strokeStyle = '#FFF';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
                     if (dig[i] > 0) {
-                        ctx.fillStyle = 'white';
-                        ctx.font = `bold ${16 * scale}px Arial`;
+                        ctx.fillStyle = '#FFF';
+                        ctx.font = 'bold 16px Arial';
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.fillText(dig[i].toString(), fx, fy);
                     }
                 }
             }
-
-            // Bottom string numbers / ×
-            const yBot1 = yLines[numFrets] + 25 * scale;
+            const botY = nutY + numFrets * fretH + 30;
+            ctx.fillStyle = '#FFF';
+            ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.font = `bold ${18 * scale}px Arial`;
-            ctx.fillStyle = 'black';
             for (let i = 0; i < 6; i++) {
-                const tx = strX[i];
                 if (pos[i] === 99) {
-                    ctx.fillText('×', tx, yBot1);
+                    ctx.fillText('✕', strX[i], botY);
                 } else {
-                    const strN = 6 - i;
-                    ctx.fillText(strN.toString(), tx, yBot1);
+                    ctx.fillText((6 - i).toString(), strX[i], botY);
                 }
             }
-
-            // String letters (played only)
-            const yBot2 = yBot1 + 25 * scale;
-            ctx.font = `${16 * scale}px Arial`;
+            const letY = botY + 30;
+            ctx.font = '16px Arial';
             for (let i = 0; i < 6; i++) {
                 if (pos[i] !== 99) {
-                    ctx.fillText(stringLetters[i], strX[i], yBot2);
+                    ctx.fillText(['E','A','D','G','B','e'][i], strX[i], letY);
                 }
             }
         }
-
-        function resizeCanvas() {
-            const canvas = document.getElementById('fretboard');
-            const maxW = Math.min(500, window.innerWidth * 0.9);
-            const scaleFactor = maxW / 400;
-            canvas.width = maxW;
-            canvas.height = 450 * scaleFactor;
-            if (currentPos) {
-                drawDiagram(canvas.getContext('2d'), currentPos, currentDig, canvas.width, canvas.height);
-            }
-        }
-
-        window.onload = function() {
-            // Populate tonalidade
-            const selTon = document.getElementById('tonalidade');
-            tonalidades.forEach(t => {
+        modoSel.onchange = () => {
+            const modo = modoSel.value;
+            tonSel.innerHTML = '<option value="">Selecione...</option>';
+            grauSel.disabled = true;
+            btn.disabled = true;
+            tonSel.disabled = !modo;
+            hideDiagram();
+            if (!modo) return;
+            const tons = modo === 'Maior' ? sharpKeys : flatKeys;
+            tons.forEach(t => {
                 const opt = document.createElement('option');
                 opt.value = t;
                 opt.textContent = t;
-                selTon.appendChild(opt);
+                tonSel.appendChild(opt);
             });
-
-            // Init chords
-            chordList.forEach(c => {
-                const kd = c.key + '-' + c.deg;
-                chords[kd] = {
-                    name: c.name,
-                    pos: [...c.pos],
-                    dig: [...c.dig]
-                };
-                if (!fingeringsByName[c.name]) {
-                    fingeringsByName[c.name] = {
-                        pos: [...c.pos],
-                        dig: [...c.dig]
-                    };
-                }
-            });
-
-            // Events
-            document.getElementById('gerar').onclick = generateDiagram;
-            window.addEventListener('resize', resizeCanvas);
-
-            // Default
-            selTon.value = 'Dó';
-            generateDiagram();
+        };
+        tonSel.onchange = () => {
+            const ton = tonSel.value;
+            grauSel.innerHTML = '<option value="">Selecione...</option>';
+            for (let d = 1; d <= 7; d++) {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = graus[d - 1];
+                grauSel.appendChild(opt);
+            }
+            grauSel.disabled = !ton;
+            btn.disabled = true;
+            hideDiagram();
+        };
+        grauSel.onchange = () => {
+            btn.disabled = !grauSel.value;
+        };
+        btn.onclick = () => {
+            const key = tonSel.value;
+            const deg = parseInt(grauSel.value);
+            const chord = chords.find(c => c.key === key && c.deg === deg);
+            if (!chord) {
+                alert('Acorde não encontrado!');
+                return;
+            }
+            const ptName = getPtChordName(chord.name);
+            chordNameDiv.textContent = ptName;
+            chordNameDiv.style.display = 'block';
+            drawChord(chord.pos, chord.dig);
+            canvas.style.display = 'block';
+            legend.style.display = 'block';
         };
     </script>
 </body>
