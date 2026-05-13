@@ -1,616 +1,487 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#8B4513">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>🎸 Gerador de Diagrama de Acordes para Guitarra</title>
-  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR2VyYWRvciBkZSBEaWFncmFtYSBkZSBBY29yZGVzIGZvciBHdWl0cnJhIiwic2hvcnRfbmFtZSI6IkFjcm9kZXMiLCJkZXNjcmlwdGlvbiI6IkdlcmUgZGlhZ3JhbWFzIGRlIGFjb3JkZXMgZGUgZ3VpdGFycmEgZW50cmUgZGUgZm9ybWEgb2ZmbGluZS4iLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMxYWYwZjA4IiwidGhlbWVfY29sb3IiOiIjOEM0QjE0Iiwib3JpZW50YXRpb24iOiJwb3J0cmFpdC1wcmltYXJ5IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsPHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4QjRDMTQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM2QjNBMTUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0idXJsKCNncmFkKSIvPjx0ZXh0IHg9Ijk2IiB5PSIxMDIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj5HPC90ZXh0PjxwYXRoIGQ9Ik0xNDAgMTQwTDMyIDgwIEw4MCAxNDAgTCAxNDAgMTQwIFoiIGZpbGw9IndoaXRlIi8+PC9zdmc+",InNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #2c1810 0%, #1a0f08 30%, #3a2a1a 70%, #2c1810 100%);
-      color: #e0d8c8;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-    h1 {
-      text-align: center;
-      color: #d4a76a;
-      font-size: 2rem;
-      margin: 1rem 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      align-items: end;
-    }
-    label {
-      display: flex;
-      flex-direction: column;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #d4a76a;
-    }
-    select {
-      font-size: 1.3rem;
-      padding: 0.75rem 1rem;
-      min-height: 48px;
-      background: #3a2a1a;
-      color: #e0d8c8;
-      border: 2px solid #8B4513;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    select:focus {
-      outline: none;
-      border-color: #d4a76a;
-      box-shadow: 0 0 10px rgba(212,167,106,0.5);
-    }
-    button {
-      font-size: 1.3rem;
-      font-weight: bold;
-      padding: 0.75rem 2rem;
-      min-height: 48px;
-      min-width: 160px;
-      background: linear-gradient(#8B4513, #6B3A15);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(139,69,19,0.4);
-    }
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(139,69,19,0.6);
-    }
-    button:active:not(:disabled) {
-      transform: translateY(0);
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-    #chord-info {
-      text-align: center;
-      margin: 1rem 0;
-      padding: 1rem;
-      background: rgba(58,42,26,0.6);
-      border-radius: 12px;
-      border: 2px solid #8B4513;
-    }
-    #chord-info h2 {
-      font-size: 2.5rem;
-      color: #d4a76a;
-      margin: 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.7);
-    }
-    #chord-info p {
-      font-size: 1.2rem;
-      margin: 0.5rem 0 0;
-      opacity: 0.9;
-    }
-    #fretboard {
-      display: block;
-      margin: 1rem auto;
-      border-radius: 16px;
-      border: 3px solid #8B4513;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.6), inset 0 0 20px rgba(212,167,106,0.1);
-      touch-action: none;
-    }
-    #legend {
-      background: rgba(58,42,26,0.8);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin: 1rem 0;
-      border: 2px solid #6B3A15;
-    }
-    #legend h3, #legend h4 {
-      color: #d4a76a;
-      margin-top: 0;
-    }
-    .toque {
-      margin-bottom: 1rem;
-    }
-    .sequence {
-      font-size: 2rem;
-      letter-spacing: 0.5rem;
-    }
-    .sequence span {
-      margin: 0 0.3rem;
-      color: #fff;
-    }
-    .dedos {
-      margin: 1rem 0;
-    }
-    .dedo {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 50px;
-      font-weight: bold;
-      font-size: 1.4rem;
-      margin: 0 0.5rem;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-    .dedo1 { background: #4CAF50; color: white; }
-    .dedo2 { background: #2196F3; color: white; }
-    .dedo3 { background: #FF9800; color: white; }
-    .dedo4 { background: #F44336; color: white; }
-    .simbolos {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      font-size: 1.1rem;
-    }
-    .simbolo {
-      padding: 0.75rem 1.5rem;
-      background: rgba(255,255,255,0.1);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .simbolo.x { color: #ff4444; }
-    .simbolo.o { color: #888; }
-    .simbolo small {
-      display: block;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-    .strings-label {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #e0e0e0;
-      margin-top: 0.5rem;
-      font-variant: small-caps;
-      letter-spacing: 0.2em;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      color: #a89c7f;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 480px) {
-      h1 { font-size: 1.8rem; }
-      .controls { flex-direction: column; align-items: center; }
-      select, button { font-size: 1.4rem; width: 100%; max-width: 280px; }
-      #chord-info h2 { font-size: 2rem; }
-      .simbolos { flex-direction: column; gap: 1rem; align-items: center; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Diagrama de Acordes para Guitarra</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(to bottom, #2C1810, #4A2C20);
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 90vw;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 12px;
+            font-size: 16px;
+            background: #5D4037;
+            color: white;
+            border: 2px solid #8B4513;
+            border-radius: 5px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        #chord-info {
+            margin: 20px 0;
+        }
+        #chord-info h2 {
+            font-size: 2.5em;
+            margin: 0;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        #chord-info p {
+            font-size: 1.2em;
+            margin: 5px 0 0;
+            color: #DDD;
+        }
+        #chord-canvas {
+            border: 3px solid #8B4513;
+            border-radius: 10px;
+            display: block;
+            max-width: 100%;
+            background: #5D4037;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #DDD;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #666;
+        }
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            select, button {
+                width: 200px;
+            }
+            #chord-info h2 {
+                font-size: 2em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎸 Gerador de Diagrama de Acordes</h1>
-    <div class="controls">
-      <label>Tonalidade:
-        <select id="tonalidade">
-          <option value="">Selecione...</option>
-        </select>
-      </label>
-      <label>Grau:
-        <select id="grau">
-          <option value="">Selecione...</option>
-        </select>
-      </label>
-      <button id="gerar" disabled>GERAR DIAGRAMA</button>
-    </div>
-    <div id="chord-info" style="display: none;">
-      <h2 id="chord-name"></h2>
-      <p id="chord-type"></p>
-    </div>
-    <canvas id="fretboard" tabindex="0"></canvas>
-    <div class="strings-label" style="display: none;">E&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;e</div>
-    <div id="legend" style="display: none;">
-      <div class="toque">
-        <h3>Sequência de Toque:</h3>
-        <div class="sequence">
-          <span>●1</span><span>●2</span><span>●3</span><span>●4</span>
+    <div class="container">
+        <div class="controls">
+            <select id="tonalidade">
+                <option value="">Selecione a Tonalidade</option>
+            </select>
+            <select id="grau">
+                <option value="">Selecione o Grau</option>
+            </select>
+            <button id="gerar" disabled>GERAR DIAGRAMA</button>
         </div>
-      </div>
-      <div class="dedos">
-        <h4>Dedos:</h4>
-        <span class="dedo dedo1">1</span>
-        <span class="dedo dedo2">2</span>
-        <span class="dedo dedo3">3</span>
-        <span class="dedo dedo4">4</span>
-      </div>
-      <div class="simbolos">
-        <span class="simbolo x">X<br><small>mudo</small></span>
-        <span class="simbolo o">O<br><small>aberta</small></span>
-      </div>
+        <div id="chord-info"></div>
+        <canvas id="chord-canvas"></canvas>
     </div>
-    <footer>Feito com ❤️ para guitarristas | Funciona offline</footer>
-  </div>
-  <script>
-    const dados = [
-      // Dó
-      {t:"Dó",g:"I",c:"C7M",tp:"Maior 7ª",ref:8,c6:8,c5:10,c4:10,c3:9,c2:8,c1:8,d6:1,d5:3,d4:4,d3:2,d2:1,d1:1},
-      {t:"Dó",g:"II",c:"Dm7",tp:"Menor 7ª",ref:5,c6:99,c5:5,c4:7,c3:5,c2:6,c1:5,d6:0,d5:1,d4:3,d3:1,d2:2,d1:1},
-      {t:"Dó",g:"III",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
-      {t:"Dó",g:"IV",c:"F7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:3,d3:2,d2:1,d1:0},
-      {t:"Dó",g:"V",c:"G7",tp:"Dominante 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:1,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
-      {t:"Dó",g:"VI",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
-      {t:"Dó",g:"VII",c:"Bm7(b5)",tp:"Meio Diminuto",ref:2,c6:99,c5:2,c4:3,c3:3,c2:3,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-      // Sol
-      {t:"Sol",g:"I",c:"G7M",tp:"Maior 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:2,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
-      {t:"Sol",g:"II",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
-      {t:"Sol",g:"III",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
-      {t:"Sol",g:"IV",c:"C7M",tp:"Maior 7ª",ref:8,c6:8,c5:10,c4:10,c3:9,c2:8,c1:8,d6:1,d5:3,d4:4,d3:2,d2:1,d1:1},
-      {t:"Sol",g:"V",c:"D7",tp:"Dominante 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:2,d6:0,d5:0,d4:0,d3:2,d2:1,d1:2},
-      {t:"Sol",g:"VI",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
-      {t:"Sol",g:"VII",c:"F#m7(b5)",tp:"Meio Diminuto",ref:2,c6:2,c5:99,c4:2,c3:3,c2:3,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
-      // Ré
-      {t:"Ré",g:"I",c:"D7M",tp:"Maior 7ª",ref:2,c6:99,c5:5,c4:4,c3:2,c2:3,c1:2,d6:0,d5:3,d4:2,d3:1,d2:4,d1:1},
-      {t:"Ré",g:"II",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
-      {t:"Ré",g:"III",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Ré",g:"IV",c:"G7M",tp:"Maior 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:2,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
-      {t:"Ré",g:"V",c:"A7",tp:"Dominante 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:2,c1:0,d6:0,d5:0,d4:2,d3:0,d2:2,d1:0},
-      {t:"Ré",g:"VI",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
-      {t:"Ré",g:"VII",c:"C#m7(b5)",tp:"Meio Diminuto",ref:4,c6:99,c5:4,c4:5,c3:5,c2:5,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-      // Lá
-      {t:"Lá",g:"I",c:"A7M",tp:"Maior 7ª",ref:1,c6:99,c5:0,c4:2,c3:1,c2:2,c1:0,d6:0,d5:0,d4:2,d3:1,d2:3,d1:0},
-      {t:"Lá",g:"II",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
-      {t:"Lá",g:"III",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Lá",g:"IV",c:"D7M",tp:"Maior 7ª",ref:2,c6:99,c5:5,c4:4,c3:2,c2:3,c1:2,d6:0,d5:3,d4:2,d3:1,d2:4,d1:1},
-      {t:"Lá",g:"V",c:"E7",tp:"Dominante 7ª",ref:1,c6:0,c5:2,c4:0,c3:1,c2:0,c1:0,d6:0,d5:2,d4:0,d3:1,d2:0,d1:0},
-      {t:"Lá",g:"VI",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Lá",g:"VII",c:"G#m7(b5)",tp:"Meio Diminuto",ref:4,c6:4,c5:99,c4:4,c3:5,c2:5,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
-      // Mi
-      {t:"Mi",g:"I",c:"E7M",tp:"Maior 7ª",ref:1,c6:0,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-      {t:"Mi",g:"II",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Mi",g:"III",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Mi",g:"IV",c:"A7M",tp:"Maior 7ª",ref:1,c6:99,c5:0,c4:2,c3:1,c2:2,c1:0,d6:0,d5:0,d4:2,d3:1,d2:3,d1:0},
-      {t:"Mi",g:"V",c:"B7",tp:"Dominante 7ª",ref:2,c6:99,c5:2,c4:1,c3:2,c2:0,c1:2,d6:0,d5:2,d4:1,d3:3,d2:0,d1:4},
-      {t:"Mi",g:"VI",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Mi",g:"VII",c:"D#m7(b5)",tp:"Meio Diminuto",ref:6,c6:99,c5:6,c4:7,c3:7,c2:7,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-      // Si
-      {t:"Si",g:"I",c:"B7M",tp:"Maior 7ª",ref:2,c6:99,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-      {t:"Si",g:"II",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Si",g:"III",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Si",g:"IV",c:"E7M",tp:"Maior 7ª",ref:1,c6:0,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-      {t:"Si",g:"V",c:"F#7",tp:"Dominante 7ª",ref:2,c6:2,c5:4,c4:2,c3:3,c2:2,c1:2,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
-      {t:"Si",g:"VI",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Si",g:"VII",c:"A#m7(b5)",tp:"Meio Diminuto",ref:6,c6:6,c5:99,c4:6,c3:7,c2:7,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
-      // Fá#
-      {t:"Fá#",g:"I",c:"F#7M",tp:"Maior 7ª",ref:2,c6:2,c5:4,c4:3,c3:3,c2:2,c1:2,d6:1,d5:3,d4:2,d3:2,d2:1,d1:1},
-      {t:"Fá#",g:"II",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Fá#",g:"III",c:"A#m7",tp:"Menor 7ª",ref:6,c6:6,c5:8,c4:6,c3:6,c2:6,c1:6,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Fá#",g:"IV",c:"B7M",tp:"Maior 7ª",ref:2,c6:99,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-      {t:"Fá#",g:"V",c:"C#7",tp:"Dominante 7ª",ref:4,c6:99,c5:4,c4:3,c3:4,c2:2,c1:99,d6:0,d5:2,d4:1,d3:3,d2:1,d1:0},
-      {t:"Fá#",g:"VI",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Fá#",g:"VII",c:"E#m7(b5)",tp:"Meio Diminuto",ref:8,c6:99,c5:8,c4:9,c3:9,c2:9,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-      // Dó#
-      {t:"Dó#",g:"I",c:"C#7M",tp:"Maior 7ª",ref:4,c6:99,c5:4,c4:3,c3:3,c2:2,c1:2,d6:0,d5:3,d4:2,d3:2,d2:1,d1:1},
-      {t:"Dó#",g:"II",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Dó#",g:"III",c:"E#m7",tp:"Menor 7ª",ref:8,c6:99,c5:8,c4:6,c3:6,c2:6,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-      {t:"Dó#",g:"IV",c:"F#7M",tp:"Maior 7ª",ref:2,c6:2,c5:4,c4:3,c3:3,c2:2,c1:2,d6:1,d5:3,d4:2,d3:2,d2:1,d1:1},
-      {t:"Dó#",g:"V",c:"G#7",tp:"Dominante 7ª",ref:4,c6:4,c5:6,c4:4,c3:5,c2:4,c1:4,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
-      {t:"Dó#",g:"VI",c:"A#m7",tp:"Menor 7ª",ref:6,c6:6,c5:8,c4:6,c3:6,c2:6,c1:6,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Dó#",g:"VII",c:"B#m7(b5)",tp:"Meio Diminuto",ref:9,c6:99,c5:11,c4:10,c3:9,c2:9,c1:99,d6:0,d5:4,d4:3,d3:2,d2:2,d1:0},
-      // Fá
-      {t:"Fá",g:"I",c:"F7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:3,d3:2,d2:1,d1:0},
-      {t:"Fá",g:"II",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
-      {t:"Fá",g:"III",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
-      {t:"Fá",g:"IV",c:"Bb7M",tp:"Maior 7ª",ref:1,c6:99,c5:1,c4:3,c3:3,c2:3,c1:1,d6:0,d5:1,d4:2,d3:3,d2:4,d1:1},
-      {t:"Fá",g:"V",c:"C7",tp:"Dominante 7ª",ref:1,c6:99,c5:3,c4:2,c3:3,c2:1,c1:0,d6:0,d5:3,d4:2,d3:3,d2:1,d1:0},
-      {t:"Fá",g:"VI",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
-      {t:"Fá",g:"VII",c:"Em7(b5)",tp:"Meio Diminuto",ref:1,c6:0,c5:1,c4:2,c3:0,c2:3,c1:99,d6:0,d5:1,d4:2,d3:0,d2:3,d1:0},
-      // Sib
-      {t:"Sib",g:"I",c:"Bb7M",tp:"Maior 7ª",ref:1,c6:99,c5:1,c4:3,c3:3,c2:3,c1:1,d6:0,d5:1,d4:2,d3:3,d2:4,d1:1},
-      {t:"Sib",g:"II",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
-      {t:"Sib",g:"III",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
-      {t:"Sib",g:"IV",c:"Eb7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:0,d6:0,d5:0,d4:1,d3:3,d2:2,d1:0},
-      {t:"Sib",g:"V",c:"F7",tp:"Dominante 7ª",ref:1,c6:1,c5:3,c4:1,c3:2,c2:1,c1:1,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
-      {t:"Sib",g:"VI",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
-      {t:"Sib",g:"VII",c:"Am7(b5)",tp:"Meio Diminuto",ref:1,c6:99,c5:1,c4:2,c3:0,c2:3,c1:99,d6:0,d5:1,d4:2,d3:0,d2:3,d1:0},
-      // Mib
-      {t:"Mib",g:"I",c:"Eb7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:0,d6:0,d5:0,d4:1,d3:3,d2:2,d1:0},
-      {t:"Mib",g:"II",c:"Fm7",tp:"Menor 7ª",ref:1,c6:1,c5:3,c4:1,c3:1,c2:1,c1:1,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Mib",g:"III",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
-      {t:"Mib",g:"IV",c:"Ab7M",tp:"Maior 7ª",ref:4,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:4,d3:3,d2:2,d1:1},
-      {t:"Mib",g:"V",c:"Bb7",tp:"Dominante 7ª",ref:1,c6:99,c5:1,c4:3,c3:1,c2:3,c1:1,d6:0,d5:1,d4:3,d3:1,d2:3,d1:1},
-      {t:"Mib",g:"VI",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
-      {t:"Mib",g:"VII",c:"Dm7(b5)",tp:"Meio Diminuto",ref:1,c6:99,c5:99,c4:0,c3:1,c2:1,c1:99,d6:0,d5:0,d4:0,d3:1,d2:1,d1:0},
-      // Láb
-      {t:"Láb",g:"I",c:"Ab7M",tp:"Maior 7ª",ref:4,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:4,d3:3,d2:2,d1:1},
-      {t:"Láb",g:"II",c:"Bbm7",tp:"Menor 7ª",ref:1,c6:99,c5:1,c4:3,c3:1,c2:1,c1:99,d6:0,d5:1,d4:3,d3:1,d2:1,d1:0},
-      {t:"Láb",g:"III",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
-      {t:"Láb",g:"IV",c:"Db7M",tp:"Maior 7ª",ref:4,c6:99,c5:4,c4:3,c3:3,c2:2,c1:99,d6:0,d5:3,d4:2,d3:2,d2:1,d1:0},
-      {t:"Láb",g:"V",c:"Eb7",tp:"Dominante 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:3,d6:0,d5:0,d4:1,d3:3,d2:2,d1:3},
-      {t:"Láb",g:"VI",c:"Fm7",tp:"Menor 7ª",ref:1,c6:1,c5:3,c4:1,c3:1,c2:1,c1:1,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-      {t:"Láb",g:"VII",c:"Gm7(b5)",tp:"Meio Diminuto",ref:3,c6:3,c5:99,c4:3,c3:4,c2:4,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0}
-    ];
+    <footer>
+        Desenvolvido por Éder Marcelo Pontes Cunha | Funciona offline
+    </footer>
+    <script>
+        const dados = [
+            // Dó (7)
+            {t:"Dó",g:"I",c:"C7M",tp:"Maior 7ª",ref:1,c6:99,c5:3,c4:2,c3:0,c2:0,c1:0,d6:0,d5:2,d4:1,d3:0,d2:0,d1:0},
+            {t:"Dó",g:"II",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
+            {t:"Dó",g:"III",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
+            {t:"Dó",g:"IV",c:"F7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:3,d3:2,d2:1,d1:0},
+            {t:"Dó",g:"V",c:"G7",tp:"Dominante 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:1,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
+            {t:"Dó",g:"VI",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
+            {t:"Dó",g:"VII",c:"Bm7(b5)",tp:"Meio Diminuto",ref:2,c6:99,c5:2,c4:3,c3:3,c2:3,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
+            // Sol (7)
+            {t:"Sol",g:"I",c:"G7M",tp:"Maior 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:2,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
+            {t:"Sol",g:"II",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
+            {t:"Sol",g:"III",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
+            {t:"Sol",g:"IV",c:"C7M",tp:"Maior 7ª",ref:1,c6:99,c5:3,c4:2,c3:0,c2:0,c1:0,d6:0,d5:2,d4:1,d3:0,d2:0,d1:0},
+            {t:"Sol",g:"V",c:"D7",tp:"Dominante 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:2,d6:0,d5:0,d4:0,d3:2,d2:1,d1:2},
+            {t:"Sol",g:"VI",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
+            {t:"Sol",g:"VII",c:"F#m7(b5)",tp:"Meio Diminuto",ref:2,c6:2,c5:99,c4:2,c3:3,c2:3,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
+            // Ré (7)
+            {t:"Ré",g:"I",c:"D7M",tp:"Maior 7ª",ref:2,c6:99,c5:5,c4:4,c3:2,c2:3,c1:2,d6:0,d5:3,d4:2,d3:1,d2:4,d1:1},
+            {t:"Ré",g:"II",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
+            {t:"Ré",g:"III",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Ré",g:"IV",c:"G7M",tp:"Maior 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:2,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
+            {t:"Ré",g:"V",c:"A7",tp:"Dominante 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:2,c1:0,d6:0,d5:0,d4:2,d3:0,d2:2,d1:0},
+            {t:"Ré",g:"VI",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
+            {t:"Ré",g:"VII",c:"C#m7(b5)",tp:"Meio Diminuto",ref:4,c6:99,c5:4,c4:5,c3:5,c2:5,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
+            // Lá (7)
+            {t:"Lá",g:"I",c:"A7M",tp:"Maior 7ª",ref:1,c6:99,c5:0,c4:2,c3:1,c2:2,c1:0,d6:0,d5:0,d4:2,d3:1,d2:3,d1:0},
+            {t:"Lá",g:"II",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
+            {t:"Lá",g:"III",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Lá",g:"IV",c:"D7M",tp:"Maior 7ª",ref:2,c6:99,c5:5,c4:4,c3:2,c2:3,c1:2,d6:0,d5:3,d4:2,d3:1,d2:4,d1:1},
+            {t:"Lá",g:"V",c:"E7",tp:"Dominante 7ª",ref:1,c6:0,c5:2,c4:0,c3:1,c2:0,c1:0,d6:0,d5:2,d4:0,d3:1,d2:0,d1:0},
+            {t:"Lá",g:"VI",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Lá",g:"VII",c:"G#m7(b5)",tp:"Meio Diminuto",ref:4,c6:4,c5:99,c4:4,c3:5,c2:5,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
+            // Mi (7)
+            {t:"Mi",g:"I",c:"E7M",tp:"Maior 7ª",ref:1,c6:0,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
+            {t:"Mi",g:"II",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Mi",g:"III",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Mi",g:"IV",c:"A7M",tp:"Maior 7ª",ref:1,c6:99,c5:0,c4:2,c3:1,c2:2,c1:0,d6:0,d5:0,d4:2,d3:1,d2:3,d1:0},
+            {t:"Mi",g:"V",c:"B7",tp:"Dominante 7ª",ref:2,c6:99,c5:2,c4:1,c3:2,c2:0,c1:2,d6:0,d5:2,d4:1,d3:3,d2:0,d1:4},
+            {t:"Mi",g:"VI",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Mi",g:"VII",c:"D#m7(b5)",tp:"Meio Diminuto",ref:6,c6:99,c5:6,c4:7,c3:7,c2:7,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
+            // Si (7)
+            {t:"Si",g:"I",c:"B7M",tp:"Maior 7ª",ref:2,c6:99,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
+            {t:"Si",g:"II",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Si",g:"III",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Si",g:"IV",c:"E7M",tp:"Maior 7ª",ref:1,c6:0,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
+            {t:"Si",g:"V",c:"F#7",tp:"Dominante 7ª",ref:2,c6:2,c5:4,c4:2,c3:3,c2:2,c1:2,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
+            {t:"Si",g:"VI",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Si",g:"VII",c:"A#m7(b5)",tp:"Meio Diminuto",ref:6,c6:6,c5:99,c4:6,c3:7,c2:7,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
+            // Fá# (7)
+            {t:"Fá#",g:"I",c:"F#7M",tp:"Maior 7ª",ref:2,c6:2,c5:4,c4:3,c3:3,c2:2,c1:2,d6:1,d5:3,d4:2,d3:2,d2:1,d1:1},
+            {t:"Fá#",g:"II",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Fá#",g:"III",c:"A#m7",tp:"Menor 7ª",ref:6,c6:6,c5:8,c4:6,c3:6,c2:6,c1:6,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Fá#",g:"IV",c:"B7M",tp:"Maior 7ª",ref:2,c6:99,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
+            {t:"Fá#",g:"V",c:"C#7",tp:"Dominante 7ª",ref:4,c6:99,c5:4,c4:3,c3:4,c2:2,c1:99,d6:0,d5:2,d4:1,d3:3,d2:1,d1:0},
+            {t:"Fá#",g:"VI",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Fá#",g:"VII",c:"E#m7(b5)",tp:"Meio Diminuto",ref:8,c6:99,c5:8,c4:9,c3:9,c2:9,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
+            // Dó# (7)
+            {t:"Dó#",g:"I",c:"C#7M",tp:"Maior 7ª",ref:4,c6:99,c5:4,c4:3,c3:3,c2:2,c1:2,d6:0,d5:3,d4:2,d3:2,d2:1,d1:1},
+            {t:"Dó#",g:"II",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Dó#",g:"III",c:"E#m7",tp:"Menor 7ª",ref:8,c6:99,c5:8,c4:6,c3:6,c2:6,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
+            {t:"Dó#",g:"IV",c:"F#7M",tp:"Maior 7ª",ref:2,c6:2,c5:4,c4:3,c3:3,c2:2,c1:2,d6:1,d5:3,d4:2,d3:2,d2:1,d1:1},
+            {t:"Dó#",g:"V",c:"G#7",tp:"Dominante 7ª",ref:4,c6:4,c5:6,c4:4,c3:5,c2:4,c1:4,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
+            {t:"Dó#",g:"VI",c:"A#m7",tp:"Menor 7ª",ref:6,c6:6,c5:8,c4:6,c3:6,c2:6,c1:6,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Dó#",g:"VII",c:"B#m7(b5)",tp:"Meio Diminuto",ref:9,c6:99,c5:11,c4:10,c3:9,c2:9,c1:99,d6:0,d5:4,d4:3,d3:2,d2:2,d1:0},
+            // Fá (7)
+            {t:"Fá",g:"I",c:"F7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:3,d3:2,d2:1,d1:0},
+            {t:"Fá",g:"II",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
+            {t:"Fá",g:"III",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
+            {t:"Fá",g:"IV",c:"Bb7M",tp:"Maior 7ª",ref:1,c6:99,c5:1,c4:3,c3:3,c2:3,c1:1,d6:0,d5:1,d4:2,d3:3,d2:4,d1:1},
+            {t:"Fá",g:"V",c:"C7",tp:"Dominante 7ª",ref:1,c6:99,c5:3,c4:2,c3:3,c2:1,c1:0,d6:0,d5:3,d4:2,d3:3,d2:1,d1:0},
+            {t:"Fá",g:"VI",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
+            {t:"Fá",g:"VII",c:"Em7(b5)",tp:"Meio Diminuto",ref:1,c6:0,c5:1,c4:2,c3:0,c2:3,c1:99,d6:0,d5:1,d4:2,d3:0,d2:3,d1:0},
+            // Sib (7)
+            {t:"Sib",g:"I",c:"Bb7M",tp:"Maior 7ª",ref:1,c6:99,c5:1,c4:3,c3:3,c2:3,c1:1,d6:0,d5:1,d4:2,d3:3,d2:4,d1:1},
+            {t:"Sib",g:"II",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
+            {t:"Sib",g:"III",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
+            {t:"Sib",g:"IV",c:"Eb7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:0,d6:0,d5:0,d4:1,d3:3,d2:2,d1:0},
+            {t:"Sib",g:"V",c:"F7",tp:"Dominante 7ª",ref:1,c6:1,c5:3,c4:1,c3:2,c2:1,c1:1,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
+            {t:"Sib",g:"VI",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
+            {t:"Sib",g:"VII",c:"Am7(b5)",tp:"Meio Diminuto",ref:1,c6:99,c5:1,c4:2,c3:0,c2:3,c1:99,d6:0,d5:1,d4:2,d3:0,d2:3,d1:0},
+            // Mib (7)
+            {t:"Mib",g:"I",c:"Eb7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:0,d6:0,d5:0,d4:1,d3:3,d2:2,d1:0},
+            {t:"Mib",g:"II",c:"Fm7",tp:"Menor 7ª",ref:1,c6:1,c5:3,c4:1,c3:1,c2:1,c1:1,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Mib",g:"III",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
+            {t:"Mib",g:"IV",c:"Ab7M",tp:"Maior 7ª",ref:4,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:4,d3:3,d2:2,d1:1},
+            {t:"Mib",g:"V",c:"Bb7",tp:"Dominante 7ª",ref:1,c6:99,c5:1,c4:3,c3:1,c2:3,c1:1,d6:0,d5:1,d4:3,d3:1,d2:3,d1:1},
+            {t:"Mib",g:"VI",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
+            {t:"Mib",g:"VII",c:"Dm7(b5)",tp:"Meio Diminuto",ref:1,c6:99,c5:99,c4:0,c3:1,c2:1,c1:99,d6:0,d5:0,d4:0,d3:1,d2:1,d1:0},
+            // Láb (7)
+            {t:"Láb",g:"I",c:"Ab7M",tp:"Maior 7ª",ref:4,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:4,d3:3,d2:2,d1:1},
+            {t:"Láb",g:"II",c:"Bbm7",tp:"Menor 7ª",ref:1,c6:99,c5:1,c4:3,c3:1,c2:1,c1:99,d6:0,d5:1,d4:3,d3:1,d2:1,d1:0},
+            {t:"Láb",g:"III",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
+            {t:"Láb",g:"IV",c:"Db7M",tp:"Maior 7ª",ref:4,c6:99,c5:4,c4:3,c3:3,c2:2,c1:99,d6:0,d5:3,d4:2,d3:2,d2:1,d1:0},
+            {t:"Láb",g:"V",c:"Eb7",tp:"Dominante 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:3,d6:0,d5:0,d4:1,d3:3,d2:2,d1:3},
+            {t:"Láb",g:"VI",c:"Fm7",tp:"Menor 7ª",ref:1,c6:1,c5:3,c4:1,c3:1,c2:1,c1:1,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
+            {t:"Láb",g:"VII",c:"Gm7(b5)",tp:"Meio Diminuto",ref:3,c6:3,c5:99,c4:3,c3:4,c2:4,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0}
+        ];
 
-    let currentChord = null;
+        let currentChord = null;
+        let canvas, ctx;
+        const tonalidades = ["Dó", "Sol", "Ré", "Lá", "Mi", "Si", "Fá#", "Dó#", "Fá", "Sib", "Mib", "Láb"];
+        const graus = ["I", "II", "III", "IV", "V", "VI", "VII"];
+        const stringLabels = {6: 'E', 5: 'A', 4: 'D', 3: 'G', 2: 'B', 1: 'e'};
+        const fingerColors = {
+            1: '#4CAF50',
+            2: '#2196F3',
+            3: '#FF9800',
+            4: '#F44336'
+        };
+        const thicknesses = [5, 4.2, 3.5, 3, 2.5, 2];
 
-    function resizeCanvas() {
-      const canvas = document.getElementById('fretboard');
-      const maxW = Math.min(520, window.innerWidth * 0.88);
-      const size = Math.min(maxW, window.innerHeight * 0.45);
-      canvas.width = size;
-      canvas.height = size * 1.35;
-      canvas.style.width = size + 'px';
-      canvas.style.height = (size * 1.35) + 'px';
-      if (currentChord) {
-        drawFretboard(currentChord);
-      }
-    }
+        function init() {
+            const selT = document.getElementById('tonalidade');
+            const selG = document.getElementById('grau');
+            const btn = document.getElementById('gerar');
 
-    function drawFretboard(chord) {
-      const canvas = document.getElementById('fretboard');
-      const ctx = canvas.getContext('2d');
-      const W = canvas.width;
-      const H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
+            tonalidades.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                selT.appendChild(opt);
+            });
 
-      // Background gradient
-      const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, '#2c1810');
-      grad.addColorStop(0.5, '#1a0f08');
-      grad.addColorStop(1, '#2c1810');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, H);
+            graus.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                selG.appendChild(opt);
+            });
 
-      const marginX = 0.08 * W;
-      const marginY = 0.1 * H;
-      const fbW = W * 0.84;
-      const fbH = H * 0.7;
-      const fbX = marginX;
-      const fbY = marginY;
-      const nutY = fbY + 0.06 * fbH;
-      const fretSpan = fbH * 0.88;
-      const cellH = fretSpan / 12;
-      const strLeft = fbX + 0.06 * fbW;
-      const strRight = fbX + 0.94 * fbW;
-      const strSpace = (strRight - strLeft) / 5;
-      const strX = [];
-      for (let s = 0; s < 6; s++) {
-        strX[s] = strLeft + strSpace * s;
-      }
+            function onChange() {
+                btn.disabled = !(selT.value && selG.value);
+                generateDiagram();
+            }
 
-      // Frets
-      ctx.strokeStyle = '#d4a76a';
-      ctx.lineCap = 'round';
-      // Nut
-      ctx.lineWidth = 7;
-      ctx.beginPath();
-      ctx.moveTo(fbX, nutY);
-      ctx.lineTo(fbX + fbW, nutY);
-      ctx.stroke();
-      // Frets 1-12
-      ctx.lineWidth = 2.2;
-      for (let f = 1; f <= 12; f++) {
-        const y = nutY + cellH * f;
-        ctx.beginPath();
-        ctx.moveTo(fbX, y);
-        ctx.lineTo(fbX + fbW, y);
-        ctx.stroke();
-      }
+            selT.addEventListener('change', onChange);
+            selG.addEventListener('change', onChange);
+            btn.addEventListener('click', generateDiagram);
 
-      // Strings
-      ctx.strokeStyle = '#ddd';
-      ctx.lineWidth = 1.8;
-      for (let s = 0; s < 6; s++) {
-        ctx.beginPath();
-        ctx.moveTo(strX[s], nutY);
-        ctx.lineTo(strX[s], nutY + 12 * cellH);
-        ctx.stroke();
-      }
-
-      // Fret markers
-      const dotR = cellH * 0.12;
-      const markerFrets = [3,5,7,9,12];
-      for (let f of markerFrets) {
-        const y = nutY + cellH * f;
-        ctx.fillStyle = '#d4a76a';
-        ctx.beginPath();
-        ctx.arc(fbX + fbW * 0.3, y, dotR, 0, 2 * Math.PI);
-        ctx.arc(fbX + fbW * 0.7, y, dotR, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-      // 12th double
-      const y12 = nutY + 12 * cellH;
-      ctx.beginPath();
-      ctx.arc(strX[1], y12, dotR, 0, 2 * Math.PI);
-      ctx.arc(strX[3], y12, dotR, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // Nut indicators
-      const nutIconH = cellH * 0.8;
-      const iconW = nutIconH;
-      for (let s = 0; s < 6; s++) {
-        const fretPos = chord[`c${6 - s}`];
-        const x = strX[s];
-        const ytop = nutY - nutIconH * 0.6;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (fretPos === 99) {
-          ctx.fillStyle = '#ff4444';
-          ctx.fillRect(x - iconW / 2, ytop, iconW, nutIconH);
-          ctx.fillStyle = '#fff';
-          ctx.font = `bold ${nutIconH * 0.7}px Arial`;
-          ctx.fillText('X', x, ytop + nutIconH / 2);
-        } else if (fretPos === 0) {
-          ctx.fillStyle = '#888';
-          ctx.beginPath();
-          ctx.arc(x, ytop + nutIconH / 2, nutIconH * 0.4, 0, 2 * Math.PI);
-          ctx.fill();
-          ctx.strokeStyle = '#666';
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.fillStyle = '#fff';
-          ctx.font = `bold ${nutIconH * 0.6}px Arial`;
-          ctx.fillText('O', x, ytop + nutIconH / 2);
+            canvas = document.getElementById('chord-canvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
         }
-      }
 
-      // Finger positions
-      const fingerColors = [null, '#4CAF50', '#2196F3', '#FF9800', '#F44336'];
-      const fingerRad = cellH * 0.32;
-      for (let s = 0; s < 6; s++) {
-        const fret = chord[`c${6 - s}`];
-        const finger = chord[`d${6 - s}`];
-        if (fret > 0 && fret <= 12 && finger >= 1 && finger <= 4) {
-          const y = nutY + cellH * fret;
-          const x = strX[s];
-          ctx.fillStyle = fingerColors[finger];
-          ctx.beginPath();
-          ctx.arc(x, y, fingerRad, 0, 2 * Math.PI);
-          ctx.fill();
-          ctx.strokeStyle = '#fff';
-          ctx.lineWidth = 2.5;
-          ctx.stroke();
-          ctx.fillStyle = '#fff';
-          ctx.font = `bold ${fingerRad * 1.6}px Arial`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(finger.toString(), x, y);
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.min(500, window.innerWidth * 0.9);
+            const h = w * 0.75;
+            canvas.width = w;
+            canvas.height = h;
+            if (currentChord) {
+                draw();
+            }
         }
-      }
 
-      // Strumming
-      const strumY = nutY - cellH * 0.8;
-      ctx.fillStyle = '#000';
-      ctx.font = `bold ${cellH * 0.5}px Arial`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (let s = 0; s < 6; s++) {
-        const seq = chord[`d${6 - s}`];
-        if (seq > 0) {
-          const x = strX[s];
-          // Bullet
-          ctx.beginPath();
-          ctx.arc(x, strumY - cellH * 0.15, cellH * 0.22, 0, 2 * Math.PI);
-          ctx.fill();
-          // Number
-          ctx.fillStyle = '#fff';
-          ctx.font = `bold ${cellH * 0.45}px Arial`;
-          ctx.fillText(seq.toString(), x, strumY + cellH * 0.08);
+        function generateDiagram() {
+            const t = document.getElementById('tonalidade').value;
+            const g = document.getElementById('grau').value;
+            if (!t || !g) return;
+
+            currentChord = dados.find(d => d.t === t && d.g === g);
+            if (!currentChord) return;
+
+            updateInfo();
+            draw();
         }
-      }
 
-      // Fret numbers
-      ctx.fillStyle = '#d4a76a';
-      ctx.font = `bold ${cellH * 0.45}px monospace`;
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'middle';
-      const numX = fbX - marginX * 0.5;
-      for (let f = 1; f <= 12; f++) {
-        const y = nutY + cellH * f;
-        ctx.fillText(f.toString(), numX, y);
-      }
-
-      // Reference fret
-      ctx.font = `bold ${cellH * 0.5}px sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText(`Ref: ${chord.ref}`, numX - cellH * 1.2, nutY - cellH * 0.8);
-
-      // String labels
-      const labelY = nutY + 12 * cellH + cellH * 0.6;
-      ctx.fillStyle = '#e0e0e0';
-      ctx.font = `bold italic ${cellH * 0.55}px serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const labels = ['E', 'A', 'D', 'G', 'B', 'e'];
-      for (let s = 0; s < 6; s++) {
-        ctx.fillText(labels[s], strX[s], labelY);
-      }
-    }
-
-    // Init
-    window.addEventListener('load', () => {
-      resizeCanvas();
-
-      const tsel = document.getElementById('tonalidade');
-      const gsel = document.getElementById('grau');
-      const btn = document.getElementById('gerar');
-      const info = document.getElementById('chord-info');
-      const legend = document.getElementById('legend');
-      const strLabel = document.querySelector('.strings-label');
-
-      // Populate tonalidades
-      const tonals = [...new Set(dados.map(d => d.t))].sort((a,b) => a.localeCompare(b));
-      tonals.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        tsel.appendChild(opt);
-      });
-
-      // Graus
-      const graus = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-      graus.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g;
-        opt.textContent = g;
-        gsel.appendChild(opt);
-      });
-
-      function updateBtn() {
-        btn.disabled = !tsel.value || !gsel.value;
-      }
-      tsel.addEventListener('change', updateBtn);
-      gsel.addEventListener('change', updateBtn);
-
-      btn.addEventListener('click', () => {
-        const chord = dados.find(d => d.t === tsel.value && d.g === gsel.value);
-        if (chord) {
-          currentChord = chord;
-          document.getElementById('chord-name').textContent = chord.c;
-          document.getElementById('chord-type').textContent = chord.tp;
-          info.style.display = 'block';
-          legend.style.display = 'block';
-          strLabel.style.display = 'block';
-          drawFretboard(chord);
+        function updateInfo() {
+            const info = document.getElementById('chord-info');
+            info.innerHTML = `
+                <h2>${currentChord.c}</h2>
+                <p>${currentChord.tp}</p>
+            `;
         }
-      });
 
-      window.addEventListener('resize', resizeCanvas);
-    });
+        function draw() {
+            if (!currentChord) return;
 
-    // PWA Service Worker
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        self.addEventListener('install', e => {
-          e.waitUntil(
-            caches.open('guitar-chords-v1').then(cache => {
-              return cache.add(window.location.href);
-            })
-          );
-        });
-        self.addEventListener('fetch', e => {
-          e.respondWith(
-            caches.match(e.request).then(response => {
-              return response || fetch(e.request);
-            })
-          );
-        });
-      `;
-      navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], {type: 'application/javascript'})))
-        .catch(err => console.log('SW failed:', err));
-    }
-  </script>
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Wood background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#8B4513');
+            gradient.addColorStop(0.5, '#A0522D');
+            gradient.addColorStop(1, '#5D4037');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const margin = 35;
+            const strWidth = canvas.width - 2 * margin;
+            const strX = new Array(6);
+            for (let i = 0; i < 6; i++) {
+                strX[i] = margin + (i / 5) * strWidth;
+            }
+
+            // Compute played strings and maxFret
+            const playedStrings = [];
+            let maxFret = 0;
+            for (let i = 0; i < 6; i++) {
+                const s = 6 - i;
+                const c = currentChord[`c${s}`];
+                if (c !== 99) {
+                    playedStrings.push(i);
+                    maxFret = Math.max(maxFret, c);
+                }
+            }
+            const numVisibleFrets = Math.max(5, maxFret);
+
+            const paddingTop = 50;
+            const paddingBottom = 55;
+            const diagramHeight = canvas.height - paddingTop - paddingBottom;
+            const nutHeight = 12;
+            const postNutHeight = diagramHeight - nutHeight;
+            const fretSpacing = postNutHeight / numVisibleFrets;
+
+            const nutTopY = paddingTop;
+            const nutBotY = nutTopY + nutHeight;
+
+            // Chord name and type
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 28px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 4;
+            ctx.fillText(`${currentChord.c} (${currentChord.t} ${currentChord.g})`, canvas.width / 2, 25);
+            ctx.font = 'bold 18px Arial';
+            ctx.shadowBlur = 2;
+            ctx.fillText(currentChord.tp, canvas.width / 2, 55);
+            ctx.shadowBlur = 0;
+
+            // Nut
+            ctx.fillStyle = '#3E2723';
+            ctx.fillRect(margin - 10, nutTopY, canvas.width - 2 * margin + 20, nutHeight);
+
+            // Frets
+            ctx.strokeStyle = '#4A2C2A';
+            ctx.lineWidth = 7;
+            ctx.lineCap = 'round';
+            for (let f = 1; f <= numVisibleFrets; f++) {
+                const fy = nutBotY + f * fretSpacing;
+                ctx.beginPath();
+                ctx.moveTo(margin - 8, fy);
+                ctx.lineTo(canvas.width - margin + 8, fy);
+                ctx.stroke();
+            }
+
+            // Fret markers at 3 and 5
+            ctx.fillStyle = '#000';
+            const markerR = 4;
+            for (let fm of [3, 5]) {
+                if (fm > numVisibleFrets) break;
+                const fmy = nutBotY + fm * fretSpacing;
+                const leftX = margin + 0.3 * strWidth;
+                const rightX = margin + 0.7 * strWidth;
+                ctx.beginPath();
+                ctx.arc(leftX, fmy, markerR, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(rightX, fmy, markerR, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Fret numbers and ref
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            if (currentChord.ref > 1) {
+                ctx.fillText(`Ref. ${currentChord.ref}`, margin - 15, nutBotY - 15);
+            }
+            for (let f = 1; f <= numVisibleFrets; f++) {
+                const fy = nutBotY + f * fretSpacing;
+                ctx.fillText(f.toString(), margin - 15, fy);
+            }
+
+            // Strings (only played)
+            ctx.strokeStyle = '#E0E0E0';
+            ctx.lineCap = 'round';
+            for (let pi = 0; pi < playedStrings.length; pi++) {
+                const i = playedStrings[pi];
+                const s = 6 - i;
+                ctx.lineWidth = thicknesses[i];
+                ctx.beginPath();
+                ctx.moveTo(strX[i], nutBotY);
+                ctx.lineTo(strX[i], canvas.height - paddingBottom + 10);
+                ctx.stroke();
+            }
+
+            // Strumming numbers (gold, sequential for played)
+            let strumNum = 1;
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            for (let i of playedStrings) {
+                ctx.fillText(strumNum.toString(), strX[i], nutTopY - 8);
+                strumNum++;
+            }
+
+            // Fingers and opens
+            for (let pi = 0; pi < playedStrings.length; pi++) {
+                const i = playedStrings[pi];
+                const s = 6 - i;
+                const c = currentChord[`c${s}`];
+                const d = currentChord[`d${s}`];
+                if (c === 0) {
+                    // Open string
+                    const oy = (nutTopY + nutBotY) / 2;
+                    ctx.save();
+                    ctx.fillStyle = 'white';
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.arc(strX[i], oy, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.fillStyle = 'black';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('O', strX[i], oy);
+                    ctx.restore();
+                } else {
+                    // Finger
+                    const fy = nutBotY + c * fretSpacing;
+                    const r = 10;
+                    if (d >= 1 && d <= 4) {
+                        ctx.fillStyle = fingerColors[d];
+                        ctx.beginPath();
+                        ctx.arc(strX[i], fy, r, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = 'white';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 18px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(d.toString(), strX[i], fy);
+                    } else {
+                        // Unknown finger, gray
+                        ctx.fillStyle = '#666';
+                        ctx.beginPath();
+                        ctx.arc(strX[i], fy, r, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = 'black';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // String labels below (only played)
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            for (let i of playedStrings) {
+                const s = 6 - i;
+                const ly = canvas.height - 15;
+                ctx.fillText(stringLabels[s], strX[i], ly);
+            }
+        }
+
+        window.addEventListener('load', init);
+    </script>
 </body>
 </html>
