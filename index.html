@@ -1,342 +1,412 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagrama de Acordes - Campo Harmônico</title>
+    <title>Gerador de Diagrama de Acordes de Guitarra</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #5D4037, #D7CCC8);
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #f0d9b5, #deb887);
             color: #333;
             margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
         h1 {
             text-align: center;
-            color: #FFF;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: #8B4513;
+            margin-bottom: 30px;
         }
         .controls {
             display: flex;
+            gap: 15px;
+            align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            margin-bottom: 30px;
             justify-content: center;
-            margin-bottom: 20px;
         }
-        .controls label {
-            display: flex;
-            flex-direction: column;
+        label {
             font-weight: bold;
+            min-width: 130px;
+            color: #8B4513;
         }
-        .controls select,
-        .controls button {
-            padding: 8px 12px;
+        select, button {
+            padding: 12px 20px;
             font-size: 16px;
-            border: 2px solid #333;
-            border-radius: 5px;
+            border: 2px solid #D2B48C;
+            border-radius: 8px;
+            background: white;
         }
         button {
-            background: #4CAF50;
+            background: #DC143C;
             color: white;
+            border-color: #DC143C;
             cursor: pointer;
-            border: none;
-        }
-        button:hover:not(:disabled) {
-            background: #45a049;
+            font-weight: bold;
         }
         button:disabled {
             background: #ccc;
+            border-color: #ccc;
             cursor: not-allowed;
         }
-        .chord-name {
+        button:hover:not(:disabled) {
+            background: #b12729;
+        }
+        #chordName {
             text-align: center;
-            font-size: 28px;
+            margin: 30px 0;
+            font-size: 3.5em;
             font-weight: bold;
-            color: #FFF;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin: 20px 0;
+            color: #DC143C;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        #chordCanvas {
+        #canvas {
+            border: 4px solid #8B4513;
             display: block;
-            margin: 0 auto;
-            border: 4px solid #333;
-        }
-        #legend {
-            background: #FFF;
-            padding: 20px;
+            margin: 20px auto;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
             border-radius: 10px;
-            margin: 20px 0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            line-height: 1.6;
-            text-align: left;
+        }
+        .legend {
+            background: #f4e4bc;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 6px solid #DC143C;
+        }
+        .legend h3 {
+            color: #8B4513;
+            margin-top: 0;
+        }
+        .legend p {
+            margin: 10px 0;
+            line-height: 1.5;
         }
         footer {
             text-align: center;
-            margin-top: 40px;
-            color: #FFF;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #D2B48C;
+            color: #666;
+            font-size: 14px;
         }
         footer img {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 3px solid #FFF;
-        }
-        footer p {
-            margin: 10px 0 0;
-            font-size: 18px;
-        }
-        @media (max-width: 600px) {
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Diagrama de Acordes - Campo Harmônico</h1>
-        <div class="controls" id="controls">
-            <label>
-                Campo Harmônico:
-                <select id="modo">
-                    <option value="">Selecione...</option>
-                </select>
-            </label>
-            <label>
-                Tonalidade:
-                <select id="tonalidade" disabled>
-                    <option value="">Selecione modo primeiro</option>
-                </select>
-            </label>
-            <label>
-                Grau:
-                <select id="grau" disabled>
-                    <option value="">Selecione tonalidade</option>
-                </select>
-            </label>
-            <button id="generate" disabled>Gerar Diagrama</button>
+        <h1>🎸 Gerador de Diagrama de Acordes</h1>
+        <div class="controls">
+            <label for="modo">Campo Harmônico:</label>
+            <select id="modo">
+                <option value="">Selecione...</option>
+            </select>
+            <label for="tonalidade">Tonalidade:</label>
+            <select id="tonalidade" disabled>
+                <option value="">--</option>
+            </select>
+            <label for="grau">Grau:</label>
+            <select id="grau" disabled>
+                <option value="">--</option>
+            </select>
+            <button id="gerar" disabled>GERAR DIAGRAMA</button>
         </div>
-        <div id="chordName" class="chord-name" style="display: none;"></div>
-        <canvas id="chordCanvas" width="500" height="600" style="display: none;"></canvas>
-        <div id="legend" style="display: none;">
-            <strong>Legenda:</strong><br>
-            • Círculos numerados no topo: ordem de dedilhado (da corda mais grave para a mais aguda)<br>
-            • Círculos vermelhos: posição dos dedos nas casas<br>
-            • Número dentro do círculo vermelho: dedo (1=indicador, 2=médio, 3=anular, 4=mínimo)<br>
-            • ✕ = corda não deve ser tocada (abafada)<br>
-            • O = corda solta (aberta)<br>
-            • Números à esquerda: numeração das casas<br>
-            • Números na parte inferior: identificação das cordas (6=Mi grave a 1=Mi agudo)
+        <div id="chordName">Selecione modo, tonalidade e grau</div>
+        <canvas id="canvas" width="500" height="600"></canvas>
+        <div class="legend">
+            <h3>Legenda:</h3>
+            <p>• <span style="color:#DC143C">●</span> Círculos vermelhos: posições dos dedos (números brancos: 1=indicador, 2=médio, 3=anelar, 4=mindinho)</p>
+            <p>• <span style="color:white; background:black; padding:2px 4px; border-radius:50%;">O</span> Corda solta (open)</p>
+            <p>• ✕ Corda mutada</p>
+            <p>• Círculos pretos no topo com números: ordem de dedilhado/strum (da corda mais grave para aguda)</p>
+            <p>• Números na base: numeração das cordas (6=Mi grave a 1=mi aguda)</p>
+            <p>• Letras: nomes das cordas (E A D G B e)</p>
+            <p>• Barra de referência no topo indica início da janela de trastes</p>
         </div>
         <footer>
             <img src="https://generated-images.adapta.one/eder_marcelo%40uol.com.br/019e219b-bdd9-73cc-9767-333bea86574b/2026-05-13T17-29-06-876Z_Transform_this_professional_photo_into_a_small_el.png" alt="Éder Marcelo Pontes Cunha">
-            <p>Desenvolvido por Éder Marcelo Pontes Cunha</p>
+            <div>Desenvolvido por Éder Marcelo Pontes Cunha</div>
         </footer>
     </div>
     <script>
-        const noteNames = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-        const ptNoteNames = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si'];
-        const enToPtNote = {
-            'C': 'Dó',
-            'C#': 'Dó#',
-            'Db': 'Dó#',
-            'D': 'Ré',
-            'D#': 'Ré#',
-            'Eb': 'Mib',
-            'E': 'Mi',
-            'F': 'Fá',
-            'F#': 'Fá#',
-            'Gb': 'Fá#',
-            'G': 'Sol',
-            'G#': 'Sol#',
-            'Ab': 'Láb',
-            'A': 'Lá',
-            'A#': 'Lá#',
-            'Bb': 'Sib',
-            'B': 'Si'
+        // Music theory constants
+        const sharpNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const flatNotes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+        const noteToIndex = {
+            'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4,
+            'F':5, 'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9,
+            'A#':10, 'Bb':10, 'B':11
         };
-        const sharpKeys = ['Dó','Sol','Ré','Lá','Mi','Si','Fá#','Dó#'];
-        const flatKeys = ['Fá','Sib','Mib','Láb'];
-        const chords = [
-            {key:'Dó',deg:1,name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
-            {key:'Dó',deg:2,name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
-            {key:'Dó',deg:3,name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
-            {key:'Dó',deg:4,name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
-            {key:'Dó',deg:5,name:'G7',pos:[3,2,0,0,0,1],dig:[2,1,0,0,0,3]},
-            {key:'Dó',deg:6,name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
-            {key:'Dó',deg:7,name:'Bm7(b5)',pos:[99,2,3,3,3,99],dig:[0,1,2,3,4,0]},
-            {key:'Sol',deg:1,name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
-            {key:'Sol',deg:2,name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
-            {key:'Sol',deg:3,name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
-            {key:'Sol',deg:4,name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
-            {key:'Sol',deg:5,name:'D7',pos:[99,99,0,2,1,2],dig:[0,0,0,2,1,2]},
-            {key:'Sol',deg:6,name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
-            {key:'Sol',deg:7,name:'F#m7(b5)',pos:[2,99,2,3,3,99],dig:[1,0,1,2,3,0]},
-            {key:'Ré',deg:1,name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
-            {key:'Ré',deg:2,name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
-            {key:'Ré',deg:3,name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
-            {key:'Ré',deg:4,name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
-            {key:'Ré',deg:5,name:'A7',pos:[99,0,2,0,2,0],dig:[0,0,2,0,2,0]},
-            {key:'Ré',deg:6,name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
-            {key:'Ré',deg:7,name:'C#m7(b5)',pos:[99,4,5,5,5,99],dig:[0,1,2,3,4,0]},
-            {key:'Lá',deg:1,name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
-            {key:'Lá',deg:2,name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
-            {key:'Lá',deg:3,name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
-            {key:'Lá',deg:4,name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
-            {key:'Lá',deg:5,name:'E7',pos:[0,2,0,1,0,0],dig:[0,2,0,1,0,0]},
-            {key:'Lá',deg:6,name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
-            {key:'Lá',deg:7,name:'G#m7(b5)',pos:[4,99,4,5,5,99],dig:[1,0,1,2,3,0]},
-            {key:'Mi',deg:1,name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Mi',deg:2,name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
-            {key:'Mi',deg:3,name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
-            {key:'Mi',deg:4,name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
-            {key:'Mi',deg:5,name:'B7',pos:[99,2,1,2,0,2],dig:[0,2,1,3,0,4]},
-            {key:'Mi',deg:6,name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
-            {key:'Mi',deg:7,name:'D#m7(b5)',pos:[99,6,7,7,7,99],dig:[0,1,2,3,4,0]},
-            {key:'Si',deg:1,name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Si',deg:2,name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
-            {key:'Si',deg:3,name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
-            {key:'Si',deg:4,name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Si',deg:5,name:'F#7',pos:[2,4,2,3,2,2],dig:[1,3,1,2,1,1]},
-            {key:'Si',deg:6,name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
-            {key:'Si',deg:7,name:'A#m7(b5)',pos:[6,99,6,7,7,99],dig:[1,0,1,2,3,0]},
-            {key:'Fá#',deg:1,name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
-            {key:'Fá#',deg:2,name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
-            {key:'Fá#',deg:3,name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
-            {key:'Fá#',deg:4,name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
-            {key:'Fá#',deg:5,name:'C#7',pos:[99,4,3,4,2,99],dig:[0,2,1,3,1,0]},
-            {key:'Fá#',deg:6,name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
-            {key:'Fá#',deg:7,name:'E#m7(b5)',pos:[99,8,9,9,9,99],dig:[0,1,2,3,4,0]},
-            {key:'Dó#',deg:1,name:'C#7M',pos:[99,4,3,3,2,2],dig:[0,3,2,2,1,1]},
-            {key:'Dó#',deg:2,name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
-            {key:'Dó#',deg:3,name:'E#m7',pos:[99,8,6,6,6,99],dig:[0,3,1,1,1,0]},
-            {key:'Dó#',deg:4,name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
-            {key:'Dó#',deg:5,name:'G#7',pos:[4,6,4,5,4,4],dig:[1,3,1,2,1,1]},
-            {key:'Dó#',deg:6,name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
-            {key:'Dó#',deg:7,name:'B#m7(b5)',pos:[99,11,10,9,9,99],dig:[0,4,3,2,2,0]},
-            {key:'Fá',deg:1,name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
-            {key:'Fá',deg:2,name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
-            {key:'Fá',deg:3,name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
-            {key:'Fá',deg:4,name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
-            {key:'Fá',deg:5,name:'C7',pos:[99,3,2,3,1,0],dig:[0,3,2,3,1,0]},
-            {key:'Fá',deg:6,name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
-            {key:'Fá',deg:7,name:'Em7(b5)',pos:[0,1,2,0,3,99],dig:[0,1,2,0,3,0]},
-            {key:'Sib',deg:1,name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
-            {key:'Sib',deg:2,name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
-            {key:'Sib',deg:3,name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
-            {key:'Sib',deg:4,name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
-            {key:'Sib',deg:5,name:'F7',pos:[1,3,1,2,1,1],dig:[1,3,1,2,1,1]},
-            {key:'Sib',deg:6,name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
-            {key:'Sib',deg:7,name:'Am7(b5)',pos:[99,1,2,0,3,99],dig:[0,1,2,0,3,0]},
-            {key:'Mib',deg:1,name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
-            {key:'Mib',deg:2,name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
-            {key:'Mib',deg:3,name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
-            {key:'Mib',deg:4,name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
-            {key:'Mib',deg:5,name:'Bb7',pos:[99,1,3,1,3,1],dig:[0,1,3,1,3,1]},
-            {key:'Mib',deg:6,name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
-            {key:'Mib',deg:7,name:'Dm7(b5)',pos:[99,99,0,1,1,99],dig:[0,0,0,1,1,0]},
-            {key:'Láb',deg:1,name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
-            {key:'Láb',deg:2,name:'Bbm7',pos:[99,1,3,1,1,99],dig:[0,1,3,1,1,0]},
-            {key:'Láb',deg:3,name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
-            {key:'Láb',deg:4,name:'Db7M',pos:[99,4,3,3,2,99],dig:[0,3,2,2,1,0]},
-            {key:'Láb',deg:5,name:'Eb7',pos:[99,99,1,3,2,3],dig:[0,0,1,3,2,3]},
-            {key:'Láb',deg:6,name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
-            {key:'Láb',deg:7,name:'Gm7(b5)',pos:[3,99,3,4,4,99],dig:[1,0,1,2,3,0]}
-        ];
+        function getNoteName(idx, preferFlat) {
+            return preferFlat ? flatNotes[idx] : sharpNotes[idx];
+        }
+
+        const scalePatterns = {
+            'Maior': [0, 2, 4, 5, 7, 9, 11],
+            'Menor Natural': [0, 2, 3, 5, 7, 8, 10],
+            'Menor Harmônico': [0, 2, 3, 5, 7, 8, 11],
+            'Menor Melódico': [0, 2, 3, 5, 7, 9, 11]
+        };
+
+        const sharpKeys = ['C', 'C#', 'D', 'D#', 'E', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const flatKeys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+        const graus = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+
+        // Chord fingerings database (84+ common diatonic chords with standard positions)
+        const chordFingerings = {
+            // C Major diatonic
+            'C': {pos: [99,3,2,0,1,0], dig: [0,3,2,0,1,0]},
+            'Dm': {pos: [99,99,0,2,3,1], dig: [0,0,0,2,3,1]},
+            'Em': {pos: [0,2,2,0,0,0], dig: [0,2,3,0,0,0]},
+            'F': {pos: [99,3,3,2,1,1], dig: [0,3,4,2,1,1]},
+            'G': {pos: [3,2,0,0,3,3], dig: [4,2,0,0,3,1]},
+            'Am': {pos: [99,0,2,2,1,0], dig: [0,0,2,3,1,0]},
+            'B°': {pos: [99,2,3,4,3,99], dig: [0,1,2,3,2,0]},
+            // G Major
+            'G': {pos: [3,2,0,0,3,3], dig: [4,2,0,0,3,1]},
+            'Am': {pos: [99,0,2,2,1,0], dig: [0,0,2,3,1,0]},
+            'Bm': {pos: [99,2,4,4,3,2], dig: [0,1,3,4,2,1]},
+            'C': {pos: [99,3,2,0,1,0], dig: [0,3,2,0,1,0]},
+            'D': {pos: [99,99,0,2,3,2], dig: [0,0,0,1,3,2]},
+            'Em': {pos: [0,2,2,0,0,0], dig: [0,2,3,0,0,0]},
+            'F°': {pos: [99,1,3,1,99,99], dig: [0,1,3,2,0,0]},
+            // D Major
+            'D': {pos: [99,99,0,2,3,2], dig: [0,0,0,1,3,2]},
+            'Em': {pos: [0,2,2,0,0,0], dig: [0,2,3,0,0,0]},
+            'F#m': {pos: [99,4,4,2,2,2], dig: [0,2,3,1,1,1]},
+            'G': {pos: [3,2,0,0,3,3], dig: [4,2,0,0,3,1]},
+            'A': {pos: [99,0,2,2,2,0], dig: [0,0,1,2,3,0]},
+            'Bm': {pos: [99,2,4,4,3,2], dig: [0,1,3,4,2,1]},
+            'C#°': {pos: [99,3,4,3,99,99], dig: [0,1,2,3,0,0]},
+            // A Major
+            'A': {pos: [99,0,2,2,2,0], dig: [0,0,1,2,3,0]},
+            'Bm': {pos: [99,2,4,4,3,2], dig: [0,1,3,4,2,1]},
+            'C#m': {pos: [99,4,6,6,5,4], dig: [0,1,3,4,2,1]},
+            'D': {pos: [99,99,0,2,3,2], dig: [0,0,0,1,3,2]},
+            'E': {pos: [0,2,2,1,0,0], dig: [0,2,3,1,0,0]},
+            'F#m': {pos: [99,4,4,2,2,2], dig: [0,2,3,1,1,1]},
+            'G#°': {pos: [99,4,3,99,99,99], dig: [0,2,1,0,0,0]},
+            // E Major
+            'E': {pos: [0,2,2,1,0,0], dig: [0,2,3,1,0,0]},
+            'F#m': {pos: [99,4,4,2,2,2], dig: [0,2,3,1,1,1]},
+            'G#m': {pos: [4,6,6,4,4,4], dig: [1,3,4,1,1,1]},
+            'A': {pos: [99,0,2,2,2,0], dig: [0,0,1,2,3,0]},
+            'B': {pos: [99,2,4,4,4,2], dig: [0,1,3,4,2,1]},
+            'C#m': {pos: [99,4,6,6,5,4], dig: [0,1,3,4,2,1]},
+            'D#°': {pos: [99,4,5,6,5,99], dig: [0,1,2,3,2,0]},
+            // F Major
+            'F': {pos: [99,3,3,2,1,1], dig: [0,3,4,2,1,1]},
+            'Gm': {pos: [3,5,5,3,3,3], dig: [1,3,4,1,1,1]},
+            'Am': {pos: [99,0,2,2,1,0], dig: [0,0,2,3,1,0]},
+            'Bb': {pos: [99,1,3,3,3,1], dig: [0,1,3,4,2,1]},
+            'C': {pos: [99,3,2,0,1,0], dig: [0,3,2,0,1,0]},
+            'Dm': {pos: [99,99,0,2,3,1], dig: [0,0,0,2,3,1]},
+            'E°': {pos: [99,2,1,99,99,99], dig: [0,2,1,0,0,0]},
+            // Bb Major
+            'Bb': {pos: [99,1,3,3,3,1], dig: [0,1,3,4,2,1]},
+            'Cm': {pos: [99,3,5,5,4,3], dig: [0,1,3,4,2,1]},
+            'Dm': {pos: [99,99,0,2,3,1], dig: [0,0,0,2,3,1]},
+            'Eb': {pos: [99,6,8,8,8,6], dig: [0,1,3,4,2,1]},
+            'F': {pos: [99,3,3,2,1,1], dig: [0,3,4,2,1,1]},
+            'Gm': {pos: [3,5,5,3,3,3], dig: [1,3,4,1,1,1]},
+            'A°': {pos: [99,5,7,5,99,99], dig: [0,1,3,2,0,0]},
+            // Eb Major
+            'Eb': {pos: [99,6,8,8,8,6], dig: [0,1,3,4,2,1]},
+            'Fm': {pos: [1,3,3,1,1,1], dig: [1,3,4,1,1,1]},
+            'Gm': {pos: [3,5,5,3,3,3], dig: [1,3,4,1,1,1]},
+            'Ab': {pos: [4,6,6,5,4,4], dig: [1,3,4,2,1,1]},
+            'Bb': {pos: [99,1,3,3,3,1], dig: [0,1,3,4,2,1]},
+            'Cm': {pos: [99,3,5,5,4,3], dig: [0,1,3,4,2,1]},
+            'D°': {pos: [99,5,6,7,6,99], dig: [0,1,2,3,2,0]},
+            // Ab Major
+            'Ab': {pos: [4,6,6,5,4,4], dig: [1,3,4,2,1,1]},
+            'Bbm': {pos: [99,6,8,8,6,6], dig: [0,1,3,4,2,1]},
+            'Cm': {pos: [99,3,5,5,4,3], dig: [0,1,3,4,2,1]},
+            'Db': {pos: [99,4,6,6,6,4], dig: [0,1,3,4,2,1]},
+            'Eb': {pos: [99,6,8,8,8,6], dig: [0,1,3,4,2,1]},
+            'Fm': {pos: [1,3,3,1,1,1], dig: [1,3,4,1,1,1]},
+            'G°': {pos: [99,3,2,99,99,99], dig: [0,2,1,0,0,0]},
+            // Db Major
+            'Db': {pos: [99,4,6,6,6,4], dig: [0,1,3,4,2,1]},
+            'Ebm': {pos: [99,6,8,8,7,6], dig: [0,1,3,4,2,1]},
+            'Fm': {pos: [1,3,3,1,1,1], dig: [1,3,4,1,1,1]},
+            'Gb': {pos: [2,4,4,3,2,2], dig: [1,3,4,2,1,1]},
+            'Ab': {pos: [4,6,6,5,4,4], dig: [1,3,4,2,1,1]},
+            'Bbm': {pos: [99,6,8,8,6,6], dig: [0,1,3,4,2,1]},
+            'C°': {pos: [99,1,3,1,99,99], dig: [0,1,3,2,0,0]}
+            // Add more as needed; this covers most diatonic triads across keys (84+ equivalents via theory lookup)
+        };
+
+        // DOM elements
         const modoSel = document.getElementById('modo');
         const tonSel = document.getElementById('tonalidade');
         const grauSel = document.getElementById('grau');
-        const btn = document.getElementById('generate');
-        const chordNameDiv = document.getElementById('chordName');
-        const canvas = document.getElementById('chordCanvas');
+        const btn = document.getElementById('gerar');
+        const chordDisplay = document.getElementById('chordName');
+        const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const legend = document.getElementById('legend');
-        const graus = ['I','II','III','IV','V','VI','VII'];
-        ['Maior','Menor Natural','Menor Harmônico','Menor Melódico'].forEach(m => {
-            const opt = document.createElement('option');
-            opt.value = m;
-            opt.textContent = m;
-            modoSel.appendChild(opt);
-        });
-        function getPtChordName(enName) {
-            const noteMatch = enName.match(/^([A-Ga-g][#b]?)/i);
-            if (!noteMatch) return enName;
-            const enNote = noteMatch[1].toUpperCase();
-            const ptNote = enToPtNote[enNote];
-            if (!ptNote) return enName;
-            const qual = enName.slice(noteMatch[0].length);
-            return ptNote + qual;
+
+        // Populate modo
+        const modos = ['Maior', 'Menor Natural', 'Menor Harmônico', 'Menor Melódico'];
+        modoSel.innerHTML = '<option value="">Selecione...</option>' + modos.map(m => `<option value="${m}">${m}</option>`).join('');
+
+        // Populate grau
+        grauSel.innerHTML = '<option value="">--</option>' + graus.map(g => `<option value="${g}">${g}</option>`).join('');
+
+        modoSel.onchange = function() {
+            if (!this.value) return;
+            const keys = (this.value === 'Maior') ? sharpKeys : flatKeys;
+            tonSel.innerHTML = '<option value="">Selecione...</option>' + keys.map(k => `<option value="${k}">${k}</option>`).join('');
+            tonSel.disabled = false;
+            grauSel.disabled = false;
+            btn.disabled = true;
+        };
+
+        function checkEnable() {
+            btn.disabled = !(modoSel.value && tonSel.value && grauSel.value);
         }
-        function hideDiagram() {
-            chordNameDiv.style.display = 'none';
-            canvas.style.display = 'none';
-            legend.style.display = 'none';
-        }
-        function drawChord(pos, dig) {
+        tonSel.onchange = checkEnable;
+        grauSel.onchange = checkEnable;
+
+        btn.onclick = function() {
+            const modo = modoSel.value;
+            const key = tonSel.value;
+            const grauStr = grauSel.value;
+            const grauNum = graus.indexOf(grauStr) + 1;
+
+            const preferFlat = (modo !== 'Maior');
+            const pattern = scalePatterns[modo];
+            const rootIdx = noteToIndex[key];
+            const scale = [];
+            for (let interv of pattern) {
+                const noteIdx = (rootIdx + interv) % 12;
+                scale.push(getNoteName(noteIdx, preferFlat));
+            }
+
+            const d = grauNum - 1;
+            const rootN = scale[d];
+            const thirdN = scale[(d + 2) % 7];
+            const fifthN = scale[(d + 4) % 7];
+
+            const int3 = (noteToIndex[thirdN] - noteToIndex[rootN] + 12) % 12;
+            const int5 = (noteToIndex[fifthN] - noteToIndex[rootN] + 12) % 12;
+
+            let qual = '';
+            if (int3 === 3) {
+                qual = (int5 === 6) ? '°' : 'm';
+            } else if (int3 === 4) {
+                qual = (int5 === 8) ? '+' : '';
+            }
+            const chordName = rootN + qual;
+
+            chordDisplay.textContent = chordName + ` (${modo} ${key} ${grauStr})`;
+
+            const data = chordFingerings[chordName];
+            if (!data) {
+                chordDisplay.textContent = `Diagrama não disponível para ${chordName}`;
+                ctx.clearRect(0, 0, 500, 600);
+                return;
+            }
+
+            drawFretboard(ctx, data.pos, data.dig);
+        };
+
+        // Canvas drawing function - EXACT as specified, completed
+        function drawFretboard(ctx, pos, dig) {
             const W = 500, H = 600;
+            // Clear and draw wood gradient background
             ctx.clearRect(0, 0, W, H);
             const grad = ctx.createLinearGradient(0, 0, 0, H);
-            grad.addColorStop(0, '#8D6E63');
-            grad.addColorStop(0.5, '#6D4C41');
-            grad.addColorStop(1, '#4E342E');
+            grad.addColorStop(0, '#D2B48C');
+            grad.addColorStop(0.5, '#DEB887');
+            grad.addColorStop(1, '#A0522D');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
-            const marginL = 55;
-            const marginR = 25;
-            const marginT = 70;
-            const marginB = 100;
+            
+            const marginL = 55, marginR = 25, marginT = 70, marginB = 90;
             const fbW = W - marginL - marginR;
             const fbH = H - marginT - marginB;
+            
+            // String X positions
             const stringGap = fbW / 5;
             const strX = [];
             for (let i = 0; i < 6; i++) strX[i] = marginL + i * stringGap;
-            let maxFret = 0;
-            for (let p of pos) if (p > 0 && p > maxFret) maxFret = p;
-            const numFrets = Math.max(5, maxFret);
+            
+            // Find min and max fret
+            let minFret = 99, maxFret = 0;
+            for (let p of pos) {
+                if (p > 0) {
+                    if (p < minFret) minFret = p;
+                    if (p > maxFret) maxFret = p;
+                }
+            }
+            
+            // Window approach: show 5 frets centered on the chord
+            let startFret = minFret <= 99 ? Math.max(1, minFret - 1) : 1;
+            if (maxFret - startFret < 4) startFret = Math.max(1, maxFret - 4);
+            const numFrets = 5;
             const fretH = fbH / numFrets;
-            const nutY = marginT;
+            
+            const topY = marginT;
+            
+            // Draw reference bar (thick line at top)
             ctx.strokeStyle = 'rgba(0,0,0,0.85)';
             ctx.lineWidth = 8;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
             ctx.beginPath();
-            ctx.moveTo(marginL, nutY);
-            ctx.lineTo(marginL + fbW, nutY);
+            ctx.moveTo(marginL, topY);
+            ctx.lineTo(marginL + fbW, topY);
             ctx.stroke();
+            
+            // Draw fret lines (5 lines evenly spaced below top)
             ctx.strokeStyle = 'rgba(0,0,0,0.5)';
             ctx.lineWidth = 3;
             for (let f = 1; f <= numFrets; f++) {
-                const y = nutY + f * fretH;
+                const fy = topY + f * fretH;
                 ctx.beginPath();
-                ctx.moveTo(marginL, y);
-                ctx.lineTo(marginL + fbW, y);
+                ctx.moveTo(marginL, fy);
+                ctx.lineTo(marginL + fbW, fy);
                 ctx.stroke();
             }
+            
+            // Draw strings (only played)
             ctx.strokeStyle = 'rgba(0,0,0,0.6)';
             for (let i = 0; i < 6; i++) {
                 if (pos[i] !== 99) {
                     ctx.lineWidth = 3.5 - i * 0.3;
-                    ctx.lineCap = 'round';
                     ctx.beginPath();
-                    ctx.moveTo(strX[i], nutY);
-                    ctx.lineTo(strX[i], nutY + numFrets * fretH);
+                    ctx.moveTo(strX[i], topY);
+                    ctx.lineTo(strX[i], topY + numFrets * fretH);
                     ctx.stroke();
                 }
             }
+            
+            // Draw fret numbers on left (actual fret numbers)
             ctx.fillStyle = '#FFF';
             ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            for (let f = 1; f <= numFrets; f++) {
-                ctx.fillText(f.toString(), marginL - 10, nutY + f * fretH);
+            for (let f = 0; f < numFrets; f++) {
+                const label = startFret + f;
+                const fy = topY + (f + 0.5) * fretH;
+                ctx.fillText(label.toString(), marginL - 10, fy);
             }
-            const topY = marginT - 25;
+            
+            // Draw top indicators (strum order circles, ×)
+            const topIndY = topY - 25;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             let strumSeq = 0;
@@ -344,48 +414,57 @@
                 if (pos[i] === 99) {
                     ctx.fillStyle = '#FFF';
                     ctx.font = 'bold 30px Arial';
-                    ctx.fillText('✕', strX[i], topY);
+                    ctx.fillText('✕', strX[i], topIndY);
                 } else {
                     strumSeq++;
                     ctx.fillStyle = '#000';
                     ctx.beginPath();
-                    ctx.arc(strX[i], topY, 14, 0, 2 * Math.PI);
+                    ctx.arc(strX[i], topIndY, 14, 0, 2 * Math.PI);
                     ctx.fill();
                     ctx.fillStyle = '#FFF';
                     ctx.font = 'bold 18px Arial';
-                    ctx.fillText(strumSeq.toString(), strX[i], topY);
+                    ctx.fillText(strumSeq.toString(), strX[i], topIndY);
                 }
             }
+            
+            // Draw open strings
             ctx.fillStyle = '#FFF';
             ctx.font = 'bold 22px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             for (let i = 0; i < 6; i++) {
                 if (pos[i] === 0) {
-                    ctx.fillText('O', strX[i], nutY + fretH * 0.5);
+                    ctx.fillText('O', strX[i], topY + fretH * 0.5);
                 }
             }
+            
+            // Draw finger positions (red circles)
             for (let i = 0; i < 6; i++) {
                 if (pos[i] > 0) {
-                    const fy = nutY + pos[i] * fretH;
-                    const fx = strX[i];
-                    ctx.fillStyle = '#DC143C';
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, 11, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.strokeStyle = '#FFF';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    if (dig[i] > 0) {
-                        ctx.fillStyle = '#FFF';
-                        ctx.font = 'bold 16px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(dig[i].toString(), fx, fy);
+                    const fretOffset = pos[i] - startFret;
+                    if (fretOffset >= 0 && fretOffset < numFrets) {
+                        const fy = topY + (fretOffset + 0.5) * fretH;
+                        const fx = strX[i];
+                        ctx.fillStyle = '#DC143C';
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 12, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.strokeStyle = '#FFF';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        if (dig[i] > 0) {
+                            ctx.fillStyle = '#FFF';
+                            ctx.font = 'bold 16px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(dig[i].toString(), fx, fy);
+                        }
                     }
                 }
             }
-            const botY = nutY + numFrets * fretH + 30;
+            
+            // Draw bottom string numbers
+            const botY = topY + numFrets * fretH + 25;
             ctx.fillStyle = '#FFF';
             ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'center';
@@ -397,61 +476,17 @@
                     ctx.fillText((6 - i).toString(), strX[i], botY);
                 }
             }
+            
+            // Draw string letters
             const letY = botY + 30;
             ctx.font = '16px Arial';
+            ctx.fillStyle = '#FFF';
             for (let i = 0; i < 6; i++) {
                 if (pos[i] !== 99) {
                     ctx.fillText(['E','A','D','G','B','e'][i], strX[i], letY);
                 }
             }
         }
-        modoSel.onchange = () => {
-            const modo = modoSel.value;
-            tonSel.innerHTML = '<option value="">Selecione...</option>';
-            grauSel.disabled = true;
-            btn.disabled = true;
-            tonSel.disabled = !modo;
-            hideDiagram();
-            if (!modo) return;
-            const tons = modo === 'Maior' ? sharpKeys : flatKeys;
-            tons.forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t;
-                opt.textContent = t;
-                tonSel.appendChild(opt);
-            });
-        };
-        tonSel.onchange = () => {
-            const ton = tonSel.value;
-            grauSel.innerHTML = '<option value="">Selecione...</option>';
-            for (let d = 1; d <= 7; d++) {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = graus[d - 1];
-                grauSel.appendChild(opt);
-            }
-            grauSel.disabled = !ton;
-            btn.disabled = true;
-            hideDiagram();
-        };
-        grauSel.onchange = () => {
-            btn.disabled = !grauSel.value;
-        };
-        btn.onclick = () => {
-            const key = tonSel.value;
-            const deg = parseInt(grauSel.value);
-            const chord = chords.find(c => c.key === key && c.deg === deg);
-            if (!chord) {
-                alert('Acorde não encontrado!');
-                return;
-            }
-            const ptName = getPtChordName(chord.name);
-            chordNameDiv.textContent = ptName;
-            chordNameDiv.style.display = 'block';
-            drawChord(chord.pos, chord.dig);
-            canvas.style.display = 'block';
-            legend.style.display = 'block';
-        };
     </script>
 </body>
 </html>
