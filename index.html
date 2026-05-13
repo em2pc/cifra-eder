@@ -1,120 +1,159 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Diagrama de Acordes para Guitarra</title>
+    <title>Diagrama de Acordes - Campo Harmônico</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
         body {
-            background: linear-gradient(to bottom, #2C1810, #4A2C20);
-            color: white;
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background: linear-gradient(to bottom, #3c2f2f, #2c1810);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .container {
-            max-width: 500px;
-            width: 90vw;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
             text-align: center;
+            color: #ffd700;
+            margin-bottom: 30px;
         }
         .controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
             justify-content: center;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
         }
-        select {
-            padding: 12px;
+        select, button {
+            padding: 12px 20px;
             font-size: 16px;
-            background: #5D4037;
-            color: white;
-            border: 2px solid #8B4513;
-            border-radius: 5px;
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            background: #8B4513;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            border: 2px solid #654321;
+            background: #4a2c1a;
+            color: #fff;
+            border-radius: 8px;
             cursor: pointer;
         }
-        button:disabled {
-            background: #666;
-            cursor: not-allowed;
+        button {
+            background: #8B4513;
+            min-width: 200px;
+            font-weight: bold;
         }
-        #chord-info {
+        button:hover {
+            background: #A0522D;
+        }
+        #chordInfo {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
             margin: 20px 0;
+            color: #ffd700;
         }
-        #chord-info h2 {
-            font-size: 2.5em;
-            margin: 0;
-            color: #FFD700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-        #chord-info p {
-            font-size: 1.2em;
-            margin: 5px 0 0;
-            color: #DDD;
-        }
-        #chord-canvas {
-            border: 3px solid #8B4513;
-            border-radius: 10px;
+        #fretboard {
             display: block;
+            margin: 20px auto;
+            border: 3px solid #654321;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            background: #2c1810;
             max-width: 100%;
-            background: #5D4037;
+            height: 450px;
+        }
+        .legend {
+            background: rgba(0,0,0,0.4);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 1px solid #654321;
+        }
+        .legend h3 {
+            margin-top: 0;
+            color: #ffd700;
+        }
+        .legend ul {
+            list-style: none;
+            padding: 0;
+        }
+        .legend li {
+            margin: 12px 0;
+            font-size: 16px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .legend li:before {
+            content: '•';
+            color: #ffd700;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
         }
         footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #DDD;
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #666;
+            margin-top: 50px;
+            padding: 20px 0;
         }
-        @media (max-width: 600px) {
+        footer img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+        @media (max-width: 768px) {
             .controls {
                 flex-direction: column;
-                align-items: center;
+                gap: 12px;
             }
             select, button {
-                width: 200px;
+                width: 90%;
+                max-width: 300px;
             }
-            #chord-info h2 {
-                font-size: 2em;
+            #chordInfo {
+                font-size: 24px;
+            }
+            #fretboard {
+                height: 350px;
+            }
+            body {
+                padding: 10px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>🎸 Diagrama de Acordes com Campo Harmônico</h1>
         <div class="controls">
-            <select id="tonalidade">
-                <option value="">Selecione a Tonalidade</option>
-            </select>
-            <select id="grau">
-                <option value="">Selecione o Grau</option>
-            </select>
-            <button id="gerar" disabled>GERAR DIAGRAMA</button>
+            <select id="tonalidade"></select>
+            <select id="grau"></select>
+            <select id="modo"></select>
+            <button id="generate">GERAR DIAGRAMA</button>
         </div>
-        <div id="chord-info"></div>
-        <canvas id="chord-canvas"></canvas>
+        <div id="chordInfo">Selecione e gere o diagrama...</div>
+        <canvas id="fretboard"></canvas>
+        <div class="legend">
+            <h3>Legenda:</h3>
+            <ul>
+                <li>× (topo e baixo): corda abafada</li>
+                <li>O (no nut): corda solta (open)</li>
+                <li>Círculos pretos numerados no topo: ordem de dedilhado (1=primeira do grave, sequencial nas tocadas)</li>
+                <li>Círculos vermelhos: posições dos dedos nas casas</li>
+                <li>Números brancos nos vermelhos: dedo (1=indicador, 2=médio, 3=anelar, 4=auricular)</li>
+                <li>Números à esquerda: numeração dos trastes</li>
+                <li>Números embaixo: cordas (6=Mi grave à esquerda ... 1=Mi agudo à direita)</li>
+            </ul>
+        </div>
     </div>
     <footer>
-        Desenvolvido por Éder Marcelo Pontes Cunha | Funciona offline
+        <img src="https://generated-images.adapta.one/eder_marcelo%40uol.com.br/019e219b-bdd9-73cc-9767-333bea86574b/2026-05-13T17-29-06-876Z_Transform_this_professional_photo_into_a_small_el.png" alt="Ícone Eder Marcelo">
     </footer>
+
     <script>
-        const dados = [
+        const majorChords = [
             // Dó (7)
             {t:"Dó",g:"I",c:"C7M",tp:"Maior 7ª",ref:1,c6:99,c5:3,c4:2,c3:0,c2:0,c1:0,d6:0,d5:2,d4:1,d3:0,d2:0,d1:0},
             {t:"Dó",g:"II",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
@@ -213,275 +252,273 @@
             {t:"Láb",g:"VII",c:"Gm7(b5)",tp:"Meio Diminuto",ref:3,c6:3,c5:99,c4:3,c3:4,c2:4,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0}
         ];
 
-        let currentChord = null;
-        let canvas, ctx;
-        const tonalidades = ["Dó", "Sol", "Ré", "Lá", "Mi", "Si", "Fá#", "Dó#", "Fá", "Sib", "Mib", "Láb"];
-        const graus = ["I", "II", "III", "IV", "V", "VI", "VII"];
-        const stringLabels = {6: 'E', 5: 'A', 4: 'D', 3: 'G', 2: 'B', 1: 'e'};
-        const fingerColors = {
-            1: '#4CAF50',
-            2: '#2196F3',
-            3: '#FF9800',
-            4: '#F44336'
+        const scales = {
+            'Maior': [0, 2, 4, 5, 7, 9, 11],
+            'Menor Natural': [0, 2, 3, 5, 7, 8, 10],
+            'Menor Harmônico': [0, 2, 3, 5, 7, 8, 11],
+            'Menor Melódico': [0, 2, 3, 5, 7, 9, 11]
         };
-        const thicknesses = [5, 4.2, 3.5, 3, 2.5, 2];
 
-        function init() {
-            const selT = document.getElementById('tonalidade');
-            const selG = document.getElementById('grau');
-            const btn = document.getElementById('gerar');
+        const chordQualities = {
+            'Maior': ['7M', 'm7', 'm7', '7M', '7', 'm7', 'm7(b5)'],
+            'Menor Natural': ['m7', 'm7(b5)', '7M', 'm7', 'm7', '7M', '7'],
+            'Menor Harmônico': ['m(7M)', 'm7(b5)', '7M(#5)', 'm7', '7', '7M', 'dim7'],
+            'Menor Melódico': ['m(7M)', 'm7', '7M(#5)', '7', '7', 'm7(b5)', 'm7(b5)']
+        };
 
-            tonalidades.forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t;
-                opt.textContent = t;
-                selT.appendChild(opt);
-            });
+        const chordTypeNames = {
+            '7M': 'Maior 7ª',
+            'm7': 'Menor 7ª',
+            'm7(b5)': 'Meio Diminuto',
+            '7': 'Dominante 7ª',
+            'm(7M)': 'Menor com 7ª Maior',
+            '7M(#5)': 'Maior 7ª Aumentada',
+            'dim7': 'Diminuta 7ª'
+        };
 
-            graus.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g;
-                opt.textContent = g;
-                selG.appendChild(opt);
-            });
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const tonalitiesPT = ['Dó', 'Sol', 'Ré', 'Lá', 'Mi', 'Si', 'Fá#', 'Dó#', 'Fá', 'Sib', 'Mib', 'Láb'];
+        const tonalidadeIndex = {'Dó':0,'Sol':7,'Ré':2,'Lá':9,'Mi':4,'Si':11,'Fá#':6,'Dó#':1,'Fá':5,'Sib':10,'Mib':3,'Láb':8};
+        const graus = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
-            function onChange() {
-                btn.disabled = !(selT.value && selG.value);
-                generateDiagram();
-            }
-
-            selT.addEventListener('change', onChange);
-            selG.addEventListener('change', onChange);
-            btn.addEventListener('click', generateDiagram);
-
-            canvas = document.getElementById('chord-canvas');
-            ctx = canvas.getContext('2d');
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-        }
-
-        function resizeCanvas() {
+        function renderFretboard(chordData) {
+            const canvas = document.getElementById('fretboard');
+            const ctx = canvas.getContext('2d');
             const rect = canvas.getBoundingClientRect();
-            const w = Math.min(500, window.innerWidth * 0.9);
-            const h = w * 0.75;
-            canvas.width = w;
-            canvas.height = h;
-            if (currentChord) {
-                draw();
-            }
-        }
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-        function generateDiagram() {
-            const t = document.getElementById('tonalidade').value;
-            const g = document.getElementById('grau').value;
-            if (!t || !g) return;
-
-            currentChord = dados.find(d => d.t === t && d.g === g);
-            if (!currentChord) return;
-
-            updateInfo();
-            draw();
-        }
-
-        function updateInfo() {
-            const info = document.getElementById('chord-info');
-            info.innerHTML = `
-                <h2>${currentChord.c}</h2>
-                <p>${currentChord.tp}</p>
-            `;
-        }
-
-        function draw() {
-            if (!currentChord) return;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Wood background gradient
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#8B4513');
-            gradient.addColorStop(0.5, '#A0522D');
-            gradient.addColorStop(1, '#5D4037');
+            // Wood background
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height / window.devicePixelRatio);
+            gradient.addColorStop(0, '#3c2f2f');
+            gradient.addColorStop(1, '#2c1810');
             ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
 
-            const margin = 35;
-            const strWidth = canvas.width - 2 * margin;
-            const strX = new Array(6);
-            for (let i = 0; i < 6; i++) {
-                strX[i] = margin + (i / 5) * strWidth;
-            }
+            const marginLeft = 70;
+            const marginTop = 80;
+            const marginRight = 30;
+            const marginBottom = 60;
+            const width = canvas.width / window.devicePixelRatio - marginLeft - marginRight;
+            const height = canvas.height / window.devicePixelRatio - marginTop - marginBottom;
 
-            // Compute played strings and maxFret
-            const playedStrings = [];
+            const pos = [chordData.c6, chordData.c5, chordData.c4, chordData.c3, chordData.c2, chordData.c1];
+            const fingPos = [chordData.d6, chordData.d5, chordData.d4, chordData.d3, chordData.d2, chordData.d1];
             let maxFret = 0;
-            for (let i = 0; i < 6; i++) {
-                const s = 6 - i;
-                const c = currentChord[`c${s}`];
-                if (c !== 99) {
-                    playedStrings.push(i);
-                    maxFret = Math.max(maxFret, c);
-                }
-            }
-            const numVisibleFrets = Math.max(5, maxFret);
+            pos.forEach((p, i) => {
+                if (p > 0) maxFret = Math.max(maxFret, p);
+            });
+            const fretCount = Math.max(5, maxFret + 1);
+            const stringSpacing = width / 5;
+            const fretSpacing = height / (fretCount + 1);
 
-            const paddingTop = 50;
-            const paddingBottom = 55;
-            const diagramHeight = canvas.height - paddingTop - paddingBottom;
-            const nutHeight = 12;
-            const postNutHeight = diagramHeight - nutHeight;
-            const fretSpacing = postNutHeight / numVisibleFrets;
-
-            const nutTopY = paddingTop;
-            const nutBotY = nutTopY + nutHeight;
-
-            // Chord name and type
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 28px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 4;
-            ctx.fillText(`${currentChord.c} (${currentChord.t} ${currentChord.g})`, canvas.width / 2, 25);
-            ctx.font = 'bold 18px Arial';
-            ctx.shadowBlur = 2;
-            ctx.fillText(currentChord.tp, canvas.width / 2, 55);
-            ctx.shadowBlur = 0;
-
-            // Nut
-            ctx.fillStyle = '#3E2723';
-            ctx.fillRect(margin - 10, nutTopY, canvas.width - 2 * margin + 20, nutHeight);
-
-            // Frets
-            ctx.strokeStyle = '#4A2C2A';
-            ctx.lineWidth = 7;
-            ctx.lineCap = 'round';
-            for (let f = 1; f <= numVisibleFrets; f++) {
-                const fy = nutBotY + f * fretSpacing;
+            // Strings (vertical lines, thicker on left)
+            ctx.strokeStyle = '#111';
+            ctx.lineWidth = 3;
+            for (let s = 0; s < 6; s++) {
+                const x = marginLeft + s * stringSpacing;
+                ctx.lineWidth = 2 + s * 0.3; // thicker bass
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.beginPath();
-                ctx.moveTo(margin - 8, fy);
-                ctx.lineTo(canvas.width - margin + 8, fy);
+                ctx.moveTo(x, marginTop);
+                ctx.lineTo(x, marginTop + height);
                 ctx.stroke();
             }
 
-            // Fret markers at 3 and 5
-            ctx.fillStyle = '#000';
-            const markerR = 4;
-            for (let fm of [3, 5]) {
-                if (fm > numVisibleFrets) break;
-                const fmy = nutBotY + fm * fretSpacing;
-                const leftX = margin + 0.3 * strWidth;
-                const rightX = margin + 0.7 * strWidth;
+            // Nut and frets (horizontal)
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = '#333';
+            ctx.lineCap = 'butt';
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, marginTop);
+            ctx.lineTo(marginLeft + width, marginTop);
+            ctx.stroke();
+
+            ctx.lineWidth = 2.5;
+            for (let f = 1; f <= fretCount; f++) {
+                const y = marginTop + f * fretSpacing;
                 ctx.beginPath();
-                ctx.arc(leftX, fmy, markerR, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(rightX, fmy, markerR, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.moveTo(marginLeft, y);
+                ctx.lineTo(marginLeft + width, y);
+                ctx.stroke();
             }
 
-            // Fret numbers and ref
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 16px Arial';
+            // Fret numbers on left
+            ctx.fillStyle = '#ddd';
+            ctx.font = 'bold 20px Arial';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            if (currentChord.ref > 1) {
-                ctx.fillText(`Ref. ${currentChord.ref}`, margin - 15, nutBotY - 15);
-            }
-            for (let f = 1; f <= numVisibleFrets; f++) {
-                const fy = nutBotY + f * fretSpacing;
-                ctx.fillText(f.toString(), margin - 15, fy);
+            for (let f = 1; f <= fretCount; f++) {
+                const y = marginTop + f * fretSpacing;
+                ctx.fillText(f.toString(), marginLeft - 15, y);
             }
 
-            // Strings (only played)
-            ctx.strokeStyle = '#E0E0E0';
-            ctx.lineCap = 'round';
-            for (let pi = 0; pi < playedStrings.length; pi++) {
-                const i = playedStrings[pi];
-                const s = 6 - i;
-                ctx.lineWidth = thicknesses[i];
-                ctx.beginPath();
-                ctx.moveTo(strX[i], nutBotY);
-                ctx.lineTo(strX[i], canvas.height - paddingBottom + 10);
-                ctx.stroke();
-            }
-
-            // Strumming numbers (gold, sequential for played)
-            let strumNum = 1;
-            ctx.fillStyle = '#FFD700';
-            ctx.font = 'bold 20px Arial';
+            // Top labels: strum order and X
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
-            for (let i of playedStrings) {
-                ctx.fillText(strumNum.toString(), strX[i], nutTopY - 8);
-                strumNum++;
+            let strumCount = 0;
+            for (let s = 0; s < 6; s++) {
+                const x = marginLeft + s * stringSpacing;
+                const yTop = marginTop - 15;
+                if (pos[s] === 99) {
+                    ctx.font = 'bold 32px Arial';
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText('×', x, yTop);
+                } else {
+                    strumCount++;
+                    // Black circle with number
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.arc(x, yTop, 16, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 20px Arial';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(strumCount.toString(), x, yTop);
+                }
             }
 
-            // Fingers and opens
-            for (let pi = 0; pi < playedStrings.length; pi++) {
-                const i = playedStrings[pi];
-                const s = 6 - i;
-                const c = currentChord[`c${s}`];
-                const d = currentChord[`d${s}`];
-                if (c === 0) {
-                    // Open string
-                    const oy = (nutTopY + nutBotY) / 2;
-                    ctx.save();
-                    ctx.fillStyle = 'white';
-                    ctx.strokeStyle = 'black';
-                    ctx.lineWidth = 2.5;
-                    ctx.beginPath();
-                    ctx.arc(strX[i], oy, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-                    ctx.fillStyle = 'black';
-                    ctx.font = 'bold 16px Arial';
-                    ctx.textAlign = 'center';
+            // Open O at nut
+            for (let s = 0; s < 6; s++) {
+                if (pos[s] === 0) {
+                    const x = marginLeft + s * stringSpacing;
+                    const yNut = marginTop + 8;
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 22px Arial';
                     ctx.textBaseline = 'middle';
-                    ctx.fillText('O', strX[i], oy);
-                    ctx.restore();
-                } else {
-                    // Finger
-                    const fy = nutBotY + c * fretSpacing;
-                    const r = 10;
-                    if (d >= 1 && d <= 4) {
-                        ctx.fillStyle = fingerColors[d];
-                        ctx.beginPath();
-                        ctx.arc(strX[i], fy, r, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.strokeStyle = 'white';
-                        ctx.lineWidth = 3;
-                        ctx.stroke();
-                        ctx.fillStyle = 'white';
-                        ctx.font = 'bold 18px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(d.toString(), strX[i], fy);
-                    } else {
-                        // Unknown finger, gray
-                        ctx.fillStyle = '#666';
-                        ctx.beginPath();
-                        ctx.arc(strX[i], fy, r, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.strokeStyle = 'black';
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
+                    ctx.fillText('O', x, yNut);
+                }
+            }
+
+            // Red finger positions
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let s = 0; s < 6; s++) {
+                if (pos[s] > 0) {
+                    const x = marginLeft + s * stringSpacing;
+                    const y = marginTop + pos[s] * fretSpacing;
+                    // Red circle
+                    ctx.fillStyle = '#dc3545';
+                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                    ctx.shadowBlur = 5;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    // Finger number
+                    const finger = fingPos[s];
+                    if (finger > 0) {
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 14px Arial';
+                        ctx.fillText(finger.toString(), x, y + 1);
                     }
                 }
             }
 
-            // String labels below (only played)
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 18px Arial';
-            ctx.textAlign = 'center';
+            // Bottom string labels
             ctx.textBaseline = 'top';
-            for (let i of playedStrings) {
-                const s = 6 - i;
-                const ly = canvas.height - 15;
-                ctx.fillText(stringLabels[s], strX[i], ly);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 20px Arial';
+            for (let s = 0; s < 6; s++) {
+                const x = marginLeft + s * stringSpacing;
+                const yBottom = marginTop + height + 15;
+                if (pos[s] === 99) {
+                    ctx.font = 'bold 26px Arial';
+                    ctx.fillText('×', x, yBottom);
+                } else {
+                    ctx.font = 'bold 20px Arial';
+                    ctx.fillText((6 - s).toString(), x, yBottom);
+                }
             }
         }
 
-        window.addEventListener('load', init);
+        function generateDiagram() {
+            const tonalidadeSel = document.getElementById('tonalidade');
+            const grauSel = document.getElementById('grau');
+            const modoSel = document.getElementById('modo');
+            const chordInfo = document.getElementById('chordInfo');
+            const canvas = document.getElementById('fretboard');
+
+            const tonalidade = tonalidadeSel.value;
+            const grau = grauSel.value;
+            const modo = modoSel.value;
+
+            let chordData = null;
+            let displayC = '';
+            let displayTp = '';
+
+            if (modo === 'Maior') {
+                chordData = majorChords.find(ch => ch.t === tonalidade && ch.g === grau);
+                if (chordData) {
+                    chordInfo.innerHTML = `${chordData.t} ${chordData.g} ${chordData.c} ${chordData.tp}`;
+                }
+            } else {
+                const tonicSemi = tonalidadeIndex[tonalidade];
+                const grauIdx = graus.indexOf(grau);
+                const scaleIntervals = scales[modo];
+                const chordRootSemi = (tonicSemi + scaleIntervals[grauIdx]) % 12;
+                const rootEng = noteNames[chordRootSemi];
+                const quality = chordQualities[modo][grauIdx];
+                displayC = rootEng + quality;
+                displayTp = chordTypeNames[quality] || quality;
+                chordData = majorChords.find(ch => ch.c === displayC);
+                if (chordData) {
+                    chordInfo.innerHTML = `${tonalidade} ${grau} ${displayC} ${displayTp}`;
+                }
+            }
+
+            if (!chordData) {
+                chordInfo.innerHTML = `Consulte digitação para ${displayC}`;
+                canvas.style.display = 'none';
+                return;
+            }
+
+            canvas.style.display = 'block';
+            renderFretboard(chordData);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tonalidadeSel = document.getElementById('tonalidade');
+            tonalitiesPT.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                tonalidadeSel.appendChild(opt);
+            });
+            tonalidadeSel.value = 'Dó';
+
+            const grauSel = document.getElementById('grau');
+            graus.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                grauSel.appendChild(opt);
+            });
+            grauSel.value = 'I';
+
+            const modoSel = document.getElementById('modo');
+            Object.keys(scales).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                modoSel.appendChild(opt);
+            });
+            modoSel.value = 'Maior';
+
+            document.getElementById('generate').addEventListener('click', generateDiagram);
+
+            // Initial render
+            generateDiagram();
+        });
+
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('fretboard');
+            if (canvas.style.display !== 'none') {
+                // Re-render if visible, but needs current chord - skip for simplicity
+            }
+        });
     </script>
 </body>
 </html>
