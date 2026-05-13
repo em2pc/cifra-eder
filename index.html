@@ -6,519 +6,508 @@
     <title>Diagrama de Acordes - Campo Harmônico</title>
     <style>
         body {
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(to bottom, #3c2f2f, #2c1810);
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 800px;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
             margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
         }
         h1 {
             text-align: center;
-            color: #ffd700;
-            margin-bottom: 30px;
+            color: #2c3e50;
         }
         .controls {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
             flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
         }
         select, button {
-            padding: 12px 20px;
+            padding: 12px 16px;
             font-size: 16px;
-            border: 2px solid #654321;
-            background: #4a2c1a;
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
         }
         button {
-            background: #8B4513;
-            min-width: 200px;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background: #A0522D;
+            background: #2980b9;
         }
-        #chordInfo {
+        #chordName {
+            text-align: center;
             font-size: 28px;
             font-weight: bold;
-            text-align: center;
+            color: #e74c3c;
             margin: 20px 0;
-            color: #ffd700;
+            min-height: 40px;
         }
         #fretboard {
             display: block;
             margin: 20px auto;
-            border: 3px solid #654321;
+            border: 2px solid #34495e;
             border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-            background: #2c1810;
-            max-width: 100%;
-            height: 450px;
-        }
-        .legend {
-            background: rgba(0,0,0,0.4);
-            padding: 25px;
-            border-radius: 10px;
-            margin: 30px 0;
-            border: 1px solid #654321;
-        }
-        .legend h3 {
-            margin-top: 0;
-            color: #ffd700;
-        }
-        .legend ul {
-            list-style: none;
-            padding: 0;
-        }
-        .legend li {
-            margin: 12px 0;
-            font-size: 16px;
-            padding-left: 20px;
-            position: relative;
-        }
-        .legend li:before {
-            content: '•';
-            color: #ffd700;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 20px 0;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
         }
         footer img {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            border: 3px solid #3498db;
+            margin-bottom: 10px;
         }
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-                gap: 12px;
-            }
-            select, button {
-                width: 90%;
-                max-width: 300px;
-            }
-            #chordInfo {
-                font-size: 24px;
-            }
-            #fretboard {
-                height: 350px;
-            }
-            body {
-                padding: 10px;
-            }
+        footer p {
+            font-size: 14px;
+            color: #7f8c8d;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎸 Diagrama de Acordes com Campo Harmônico</h1>
-        <div class="controls">
-            <select id="tonalidade"></select>
-            <select id="grau"></select>
-            <select id="modo"></select>
-            <button id="generate">GERAR DIAGRAMA</button>
-        </div>
-        <div id="chordInfo">Selecione e gere o diagrama...</div>
-        <canvas id="fretboard"></canvas>
-        <div class="legend">
-            <h3>Legenda:</h3>
-            <ul>
-                <li>× (topo e baixo): corda abafada</li>
-                <li>O (no nut): corda solta (open)</li>
-                <li>Círculos pretos numerados no topo: ordem de dedilhado (1=primeira do grave, sequencial nas tocadas)</li>
-                <li>Círculos vermelhos: posições dos dedos nas casas</li>
-                <li>Números brancos nos vermelhos: dedo (1=indicador, 2=médio, 3=anelar, 4=auricular)</li>
-                <li>Números à esquerda: numeração dos trastes</li>
-                <li>Números embaixo: cordas (6=Mi grave à esquerda ... 1=Mi agudo à direita)</li>
-            </ul>
-        </div>
+    <h1>Diagrama de Acordes para Campo Harmônico</h1>
+    <div class="controls">
+        <select id="tonalidade"></select>
+        <select id="grau">
+            <option>I</option>
+            <option>II</option>
+            <option>III</option>
+            <option>IV</option>
+            <option>V</option>
+            <option>VI</option>
+            <option>VII</option>
+        </select>
+        <select id="modo">
+            <option>Maior</option>
+            <option>Menor Natural</option>
+            <option>Menor Harmônico</option>
+            <option>Menor Melódico</option>
+        </select>
+        <button id="gerar">GERAR DIAGRAMA</button>
     </div>
+    <h2 id="chordName">Selecione e gere o diagrama</h2>
+    <canvas id="fretboard" width="400" height="450"></canvas>
     <footer>
-        <img src="https://generated-images.adapta.one/eder_marcelo%40uol.com.br/019e219b-bdd9-73cc-9767-333bea86574b/2026-05-13T17-29-06-876Z_Transform_this_professional_photo_into_a_small_el.png" alt="Ícone Eder Marcelo">
+        <img src="https://generated-images.adapta.one/eder_marcelo%40uol.com.br/019e219b-bdd9-73cc-9767-333bea86574b/2026-05-13T17-29-06-876Z_Transform_this_professional_photo_into_a_small_el.png" alt="Ícone Éder Marcelo">
+        <p>Desenvolvido por Éder Marcelo Pontes Cunha</p>
     </footer>
 
     <script>
-        const majorChords = [
-            // Dó (7)
-            {t:"Dó",g:"I",c:"C7M",tp:"Maior 7ª",ref:1,c6:99,c5:3,c4:2,c3:0,c2:0,c1:0,d6:0,d5:2,d4:1,d3:0,d2:0,d1:0},
-            {t:"Dó",g:"II",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
-            {t:"Dó",g:"III",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
-            {t:"Dó",g:"IV",c:"F7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:3,d3:2,d2:1,d1:0},
-            {t:"Dó",g:"V",c:"G7",tp:"Dominante 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:1,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
-            {t:"Dó",g:"VI",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
-            {t:"Dó",g:"VII",c:"Bm7(b5)",tp:"Meio Diminuto",ref:2,c6:99,c5:2,c4:3,c3:3,c2:3,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-            // Sol (7)
-            {t:"Sol",g:"I",c:"G7M",tp:"Maior 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:2,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
-            {t:"Sol",g:"II",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
-            {t:"Sol",g:"III",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
-            {t:"Sol",g:"IV",c:"C7M",tp:"Maior 7ª",ref:1,c6:99,c5:3,c4:2,c3:0,c2:0,c1:0,d6:0,d5:2,d4:1,d3:0,d2:0,d1:0},
-            {t:"Sol",g:"V",c:"D7",tp:"Dominante 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:2,d6:0,d5:0,d4:0,d3:2,d2:1,d1:2},
-            {t:"Sol",g:"VI",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
-            {t:"Sol",g:"VII",c:"F#m7(b5)",tp:"Meio Diminuto",ref:2,c6:2,c5:99,c4:2,c3:3,c2:3,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
-            // Ré (7)
-            {t:"Ré",g:"I",c:"D7M",tp:"Maior 7ª",ref:2,c6:99,c5:5,c4:4,c3:2,c2:3,c1:2,d6:0,d5:3,d4:2,d3:1,d2:4,d1:1},
-            {t:"Ré",g:"II",c:"Em7",tp:"Menor 7ª",ref:1,c6:0,c5:2,c4:2,c3:0,c2:3,c1:0,d6:0,d5:2,d4:3,d3:0,d2:1,d1:0},
-            {t:"Ré",g:"III",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Ré",g:"IV",c:"G7M",tp:"Maior 7ª",ref:1,c6:3,c5:2,c4:0,c3:0,c2:0,c1:2,d6:2,d5:1,d4:0,d3:0,d2:0,d1:3},
-            {t:"Ré",g:"V",c:"A7",tp:"Dominante 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:2,c1:0,d6:0,d5:0,d4:2,d3:0,d2:2,d1:0},
-            {t:"Ré",g:"VI",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
-            {t:"Ré",g:"VII",c:"C#m7(b5)",tp:"Meio Diminuto",ref:4,c6:99,c5:4,c4:5,c3:5,c2:5,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-            // Lá (7)
-            {t:"Lá",g:"I",c:"A7M",tp:"Maior 7ª",ref:1,c6:99,c5:0,c4:2,c3:1,c2:2,c1:0,d6:0,d5:0,d4:2,d3:1,d2:3,d1:0},
-            {t:"Lá",g:"II",c:"Bm7",tp:"Menor 7ª",ref:2,c6:99,c5:2,c4:4,c3:4,c2:3,c1:2,d6:0,d5:1,d4:3,d3:4,d2:2,d1:1},
-            {t:"Lá",g:"III",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Lá",g:"IV",c:"D7M",tp:"Maior 7ª",ref:2,c6:99,c5:5,c4:4,c3:2,c2:3,c1:2,d6:0,d5:3,d4:2,d3:1,d2:4,d1:1},
-            {t:"Lá",g:"V",c:"E7",tp:"Dominante 7ª",ref:1,c6:0,c5:2,c4:0,c3:1,c2:0,c1:0,d6:0,d5:2,d4:0,d3:1,d2:0,d1:0},
-            {t:"Lá",g:"VI",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Lá",g:"VII",c:"G#m7(b5)",tp:"Meio Diminuto",ref:4,c6:4,c5:99,c4:4,c3:5,c2:5,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
-            // Mi (7)
-            {t:"Mi",g:"I",c:"E7M",tp:"Maior 7ª",ref:1,c6:0,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-            {t:"Mi",g:"II",c:"F#m7",tp:"Menor 7ª",ref:2,c6:2,c5:4,c4:2,c3:2,c2:2,c1:2,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Mi",g:"III",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Mi",g:"IV",c:"A7M",tp:"Maior 7ª",ref:1,c6:99,c5:0,c4:2,c3:1,c2:2,c1:0,d6:0,d5:0,d4:2,d3:1,d2:3,d1:0},
-            {t:"Mi",g:"V",c:"B7",tp:"Dominante 7ª",ref:2,c6:99,c5:2,c4:1,c3:2,c2:0,c1:2,d6:0,d5:2,d4:1,d3:3,d2:0,d1:4},
-            {t:"Mi",g:"VI",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Mi",g:"VII",c:"D#m7(b5)",tp:"Meio Diminuto",ref:6,c6:99,c5:6,c4:7,c3:7,c2:7,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-            // Si (7)
-            {t:"Si",g:"I",c:"B7M",tp:"Maior 7ª",ref:2,c6:99,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-            {t:"Si",g:"II",c:"C#m7",tp:"Menor 7ª",ref:4,c6:99,c5:4,c4:2,c3:2,c2:2,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Si",g:"III",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Si",g:"IV",c:"E7M",tp:"Maior 7ª",ref:1,c6:0,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-            {t:"Si",g:"V",c:"F#7",tp:"Dominante 7ª",ref:2,c6:2,c5:4,c4:2,c3:3,c2:2,c1:2,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
-            {t:"Si",g:"VI",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Si",g:"VII",c:"A#m7(b5)",tp:"Meio Diminuto",ref:6,c6:6,c5:99,c4:6,c3:7,c2:7,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0},
-            // Fá# (7)
-            {t:"Fá#",g:"I",c:"F#7M",tp:"Maior 7ª",ref:2,c6:2,c5:4,c4:3,c3:3,c2:2,c1:2,d6:1,d5:3,d4:2,d3:2,d2:1,d1:1},
-            {t:"Fá#",g:"II",c:"G#m7",tp:"Menor 7ª",ref:4,c6:4,c5:6,c4:4,c3:4,c2:4,c1:4,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Fá#",g:"III",c:"A#m7",tp:"Menor 7ª",ref:6,c6:6,c5:8,c4:6,c3:6,c2:6,c1:6,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Fá#",g:"IV",c:"B7M",tp:"Maior 7ª",ref:2,c6:99,c5:2,c4:1,c3:1,c2:0,c1:0,d6:0,d5:2,d4:1,d3:1,d2:0,d1:0},
-            {t:"Fá#",g:"V",c:"C#7",tp:"Dominante 7ª",ref:4,c6:99,c5:4,c4:3,c3:4,c2:2,c1:99,d6:0,d5:2,d4:1,d3:3,d2:1,d1:0},
-            {t:"Fá#",g:"VI",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Fá#",g:"VII",c:"E#m7(b5)",tp:"Meio Diminuto",ref:8,c6:99,c5:8,c4:9,c3:9,c2:9,c1:99,d6:0,d5:1,d4:2,d3:3,d2:4,d1:0},
-            // Dó# (7)
-            {t:"Dó#",g:"I",c:"C#7M",tp:"Maior 7ª",ref:4,c6:99,c5:4,c4:3,c3:3,c2:2,c1:2,d6:0,d5:3,d4:2,d3:2,d2:1,d1:1},
-            {t:"Dó#",g:"II",c:"D#m7",tp:"Menor 7ª",ref:6,c6:99,c5:6,c4:4,c3:4,c2:4,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Dó#",g:"III",c:"E#m7",tp:"Menor 7ª",ref:8,c6:99,c5:8,c4:6,c3:6,c2:6,c1:99,d6:0,d5:3,d4:1,d3:1,d2:1,d1:0},
-            {t:"Dó#",g:"IV",c:"F#7M",tp:"Maior 7ª",ref:2,c6:2,c5:4,c4:3,c3:3,c2:2,c1:2,d6:1,d5:3,d4:2,d3:2,d2:1,d1:1},
-            {t:"Dó#",g:"V",c:"G#7",tp:"Dominante 7ª",ref:4,c6:4,c5:6,c4:4,c3:5,c2:4,c1:4,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
-            {t:"Dó#",g:"VI",c:"A#m7",tp:"Menor 7ª",ref:6,c6:6,c5:8,c4:6,c3:6,c2:6,c1:6,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Dó#",g:"VII",c:"B#m7(b5)",tp:"Meio Diminuto",ref:9,c6:99,c5:11,c4:10,c3:9,c2:9,c1:99,d6:0,d5:4,d4:3,d3:2,d2:2,d1:0},
-            // Fá (7)
-            {t:"Fá",g:"I",c:"F7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:3,d3:2,d2:1,d1:0},
-            {t:"Fá",g:"II",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
-            {t:"Fá",g:"III",c:"Am7",tp:"Menor 7ª",ref:1,c6:99,c5:0,c4:2,c3:0,c2:1,c1:0,d6:0,d5:0,d4:2,d3:0,d2:1,d1:0},
-            {t:"Fá",g:"IV",c:"Bb7M",tp:"Maior 7ª",ref:1,c6:99,c5:1,c4:3,c3:3,c2:3,c1:1,d6:0,d5:1,d4:2,d3:3,d2:4,d1:1},
-            {t:"Fá",g:"V",c:"C7",tp:"Dominante 7ª",ref:1,c6:99,c5:3,c4:2,c3:3,c2:1,c1:0,d6:0,d5:3,d4:2,d3:3,d2:1,d1:0},
-            {t:"Fá",g:"VI",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
-            {t:"Fá",g:"VII",c:"Em7(b5)",tp:"Meio Diminuto",ref:1,c6:0,c5:1,c4:2,c3:0,c2:3,c1:99,d6:0,d5:1,d4:2,d3:0,d2:3,d1:0},
-            // Sib (7)
-            {t:"Sib",g:"I",c:"Bb7M",tp:"Maior 7ª",ref:1,c6:99,c5:1,c4:3,c3:3,c2:3,c1:1,d6:0,d5:1,d4:2,d3:3,d2:4,d1:1},
-            {t:"Sib",g:"II",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
-            {t:"Sib",g:"III",c:"Dm7",tp:"Menor 7ª",ref:1,c6:99,c5:99,c4:0,c3:2,c2:1,c1:1,d6:0,d5:0,d4:0,d3:2,d2:1,d1:1},
-            {t:"Sib",g:"IV",c:"Eb7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:0,d6:0,d5:0,d4:1,d3:3,d2:2,d1:0},
-            {t:"Sib",g:"V",c:"F7",tp:"Dominante 7ª",ref:1,c6:1,c5:3,c4:1,c3:2,c2:1,c1:1,d6:1,d5:3,d4:1,d3:2,d2:1,d1:1},
-            {t:"Sib",g:"VI",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
-            {t:"Sib",g:"VII",c:"Am7(b5)",tp:"Meio Diminuto",ref:1,c6:99,c5:1,c4:2,c3:0,c2:3,c1:99,d6:0,d5:1,d4:2,d3:0,d2:3,d1:0},
-            // Mib (7)
-            {t:"Mib",g:"I",c:"Eb7M",tp:"Maior 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:0,d6:0,d5:0,d4:1,d3:3,d2:2,d1:0},
-            {t:"Mib",g:"II",c:"Fm7",tp:"Menor 7ª",ref:1,c6:1,c5:3,c4:1,c3:1,c2:1,c1:1,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Mib",g:"III",c:"Gm7",tp:"Menor 7ª",ref:1,c6:3,c5:1,c4:0,c3:0,c2:3,c1:3,d6:3,d5:1,d4:0,d3:0,d2:3,d1:3},
-            {t:"Mib",g:"IV",c:"Ab7M",tp:"Maior 7ª",ref:4,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:4,d3:3,d2:2,d1:1},
-            {t:"Mib",g:"V",c:"Bb7",tp:"Dominante 7ª",ref:1,c6:99,c5:1,c4:3,c3:1,c2:3,c1:1,d6:0,d5:1,d4:3,d3:1,d2:3,d1:1},
-            {t:"Mib",g:"VI",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
-            {t:"Mib",g:"VII",c:"Dm7(b5)",tp:"Meio Diminuto",ref:1,c6:99,c5:99,c4:0,c3:1,c2:1,c1:99,d6:0,d5:0,d4:0,d3:1,d2:1,d1:0},
-            // Láb (7)
-            {t:"Láb",g:"I",c:"Ab7M",tp:"Maior 7ª",ref:4,c6:99,c5:99,c4:3,c3:2,c2:1,c1:0,d6:0,d5:0,d4:4,d3:3,d2:2,d1:1},
-            {t:"Láb",g:"II",c:"Bbm7",tp:"Menor 7ª",ref:1,c6:99,c5:1,c4:3,c3:1,c2:1,c1:99,d6:0,d5:1,d4:3,d3:1,d2:1,d1:0},
-            {t:"Láb",g:"III",c:"Cm7",tp:"Menor 7ª",ref:3,c6:99,c5:3,c4:1,c3:3,c2:3,c1:99,d6:0,d5:2,d4:1,d3:3,d2:4,d1:0},
-            {t:"Láb",g:"IV",c:"Db7M",tp:"Maior 7ª",ref:4,c6:99,c5:4,c4:3,c3:3,c2:2,c1:99,d6:0,d5:3,d4:2,d3:2,d2:1,d1:0},
-            {t:"Láb",g:"V",c:"Eb7",tp:"Dominante 7ª",ref:1,c6:99,c5:99,c4:1,c3:3,c2:2,c1:3,d6:0,d5:0,d4:1,d3:3,d2:2,d1:3},
-            {t:"Láb",g:"VI",c:"Fm7",tp:"Menor 7ª",ref:1,c6:1,c5:3,c4:1,c3:1,c2:1,c1:1,d6:1,d5:3,d4:1,d3:1,d2:1,d1:1},
-            {t:"Láb",g:"VII",c:"Gm7(b5)",tp:"Meio Diminuto",ref:3,c6:3,c5:99,c4:3,c3:4,c2:4,c1:99,d6:1,d5:0,d4:1,d3:2,d2:3,d1:0}
-        ];
+        const tonalidades = ['Dó', 'Sol', 'Ré', 'Lá', 'Mi', 'Si', 'Fá#', 'Dó#', 'Fá', 'Sib', 'Mib', 'Láb'];
+        const graus = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+        const modos = ['Maior', 'Menor Natural', 'Menor Harmônico', 'Menor Melódico'];
+        const stringLetters = ['E', 'A', 'D', 'G', 'B', 'e'];
 
-        const scales = {
-            'Maior': [0, 2, 4, 5, 7, 9, 11],
-            'Menor Natural': [0, 2, 3, 5, 7, 8, 10],
-            'Menor Harmônico': [0, 2, 3, 5, 7, 8, 11],
-            'Menor Melódico': [0, 2, 3, 5, 7, 9, 11]
+        const noteIndices = {
+            'Dó': 0, 'Sol': 7, 'Ré': 2, 'Lá': 9, 'Mi': 4, 'Si': 11,
+            'Fá#': 6, 'Dó#': 1, 'Fá': 5, 'Sib': 10, 'Mib': 3, 'Láb': 8
         };
 
-        const chordQualities = {
+        const sharpNoteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const flatNoteNames = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+        const sharpTonalities = ['Dó', 'Sol', 'Ré', 'Lá', 'Mi', 'Si', 'Fá#', 'Dó#'];
+
+        const majSteps = [0, 2, 4, 5, 7, 9, 11];
+        const natMinSteps = [0, 2, 3, 5, 7, 8, 10];
+        const harmMinSteps = [0, 2, 3, 5, 7, 8, 11];
+        const melMinSteps = [0, 2, 3, 5, 7, 9, 11];
+
+        const scaleSteps = {
+            'Maior': majSteps,
+            'Menor Natural': natMinSteps,
+            'Menor Harmônico': harmMinSteps,
+            'Menor Melódico': melMinSteps
+        };
+
+        const qualities = {
             'Maior': ['7M', 'm7', 'm7', '7M', '7', 'm7', 'm7(b5)'],
             'Menor Natural': ['m7', 'm7(b5)', '7M', 'm7', 'm7', '7M', '7'],
-            'Menor Harmônico': ['m(7M)', 'm7(b5)', '7M(#5)', 'm7', '7', '7M', 'dim7'],
-            'Menor Melódico': ['m(7M)', 'm7', '7M(#5)', '7', '7', 'm7(b5)', 'm7(b5)']
+            'Menor Harmônico': ['m7', 'm7(b5)', '7M', 'm7', '7', '7M', 'm7(b5)'],
+            'Menor Melódico': ['m7', 'm7', '7M', '7', '7', 'm7(b5)', 'm7(b5)']
         };
 
-        const chordTypeNames = {
-            '7M': 'Maior 7ª',
-            'm7': 'Menor 7ª',
-            'm7(b5)': 'Meio Diminuto',
-            '7': 'Dominante 7ª',
-            'm(7M)': 'Menor com 7ª Maior',
-            '7M(#5)': 'Maior 7ª Aumentada',
-            'dim7': 'Diminuta 7ª'
-        };
+        const chordList = [
+            // Dó
+            {key:'Dó',deg:'I',name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
+            {key:'Dó',deg:'II',name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
+            {key:'Dó',deg:'III',name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
+            {key:'Dó',deg:'IV',name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
+            {key:'Dó',deg:'V',name:'G7',pos:[3,2,0,0,0,1],dig:[2,1,0,0,0,3]},
+            {key:'Dó',deg:'VI',name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
+            {key:'Dó',deg:'VII',name:'Bm7(b5)',pos:[99,2,3,3,3,99],dig:[0,1,2,3,4,0]},
+            // Sol
+            {key:'Sol',deg:'I',name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
+            {key:'Sol',deg:'II',name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
+            {key:'Sol',deg:'III',name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
+            {key:'Sol',deg:'IV',name:'C7M',pos:[99,3,2,0,0,0],dig:[0,2,1,0,0,0]},
+            {key:'Sol',deg:'V',name:'D7',pos:[99,99,0,2,1,2],dig:[0,0,0,2,1,2]},
+            {key:'Sol',deg:'VI',name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
+            {key:'Sol',deg:'VII',name:'F#m7(b5)',pos:[2,99,2,3,3,99],dig:[1,0,1,2,3,0]},
+            // Ré
+            {key:'Ré',deg:'I',name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
+            {key:'Ré',deg:'II',name:'Em7',pos:[0,2,2,0,3,0],dig:[0,2,3,0,1,0]},
+            {key:'Ré',deg:'III',name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
+            {key:'Ré',deg:'IV',name:'G7M',pos:[3,2,0,0,0,2],dig:[2,1,0,0,0,3]},
+            {key:'Ré',deg:'V',name:'A7',pos:[99,0,2,0,2,0],dig:[0,0,2,0,2,0]},
+            {key:'Ré',deg:'VI',name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
+            {key:'Ré',deg:'VII',name:'C#m7(b5)',pos:[99,4,5,5,5,99],dig:[0,1,2,3,4,0]},
+            // Lá
+            {key:'Lá',deg:'I',name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
+            {key:'Lá',deg:'II',name:'Bm7',pos:[99,2,4,4,3,2],dig:[0,1,3,4,2,1]},
+            {key:'Lá',deg:'III',name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
+            {key:'Lá',deg:'IV',name:'D7M',pos:[99,5,4,2,3,2],dig:[0,3,2,1,4,1]},
+            {key:'Lá',deg:'V',name:'E7',pos:[0,2,0,1,0,0],dig:[0,2,0,1,0,0]},
+            {key:'Lá',deg:'VI',name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
+            {key:'Lá',deg:'VII',name:'G#m7(b5)',pos:[4,99,4,5,5,99],dig:[1,0,1,2,3,0]},
+            // Mi
+            {key:'Mi',deg:'I',name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Mi',deg:'II',name:'F#m7',pos:[2,4,2,2,2,2],dig:[1,3,1,1,1,1]},
+            {key:'Mi',deg:'III',name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
+            {key:'Mi',deg:'IV',name:'A7M',pos:[99,0,2,1,2,0],dig:[0,0,2,1,3,0]},
+            {key:'Mi',deg:'V',name:'B7',pos:[99,2,1,2,0,2],dig:[0,2,1,3,0,4]},
+            {key:'Mi',deg:'VI',name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
+            {key:'Mi',deg:'VII',name:'D#m7(b5)',pos:[99,6,7,7,7,99],dig:[0,1,2,3,4,0]},
+            // Si
+            {key:'Si',deg:'I',name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Si',deg:'II',name:'C#m7',pos:[99,4,2,2,2,99],dig:[0,3,1,1,1,0]},
+            {key:'Si',deg:'III',name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
+            {key:'Si',deg:'IV',name:'E7M',pos:[0,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Si',deg:'V',name:'F#7',pos:[2,4,2,3,2,2],dig:[1,3,1,2,1,1]},
+            {key:'Si',deg:'VI',name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
+            {key:'Si',deg:'VII',name:'A#m7(b5)',pos:[6,99,6,7,7,99],dig:[1,0,1,2,3,0]},
+            // Fá#
+            {key:'Fá#',deg:'I',name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
+            {key:'Fá#',deg:'II',name:'G#m7',pos:[4,6,4,4,4,4],dig:[1,3,1,1,1,1]},
+            {key:'Fá#',deg:'III',name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
+            {key:'Fá#',deg:'IV',name:'B7M',pos:[99,2,1,1,0,0],dig:[0,2,1,1,0,0]},
+            {key:'Fá#',deg:'V',name:'C#7',pos:[99,4,3,4,2,99],dig:[0,2,1,3,1,0]},
+            {key:'Fá#',deg:'VI',name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
+            {key:'Fá#',deg:'VII',name:'E#m7(b5)',pos:[99,8,9,9,9,99],dig:[0,1,2,3,4,0]},
+            // Dó#
+            {key:'Dó#',deg:'I',name:'C#7M',pos:[99,4,3,3,2,2],dig:[0,3,2,2,1,1]},
+            {key:'Dó#',deg:'II',name:'D#m7',pos:[99,6,4,4,4,99],dig:[0,3,1,1,1,0]},
+            {key:'Dó#',deg:'III',name:'E#m7',pos:[99,8,6,6,6,99],dig:[0,3,1,1,1,0]},
+            {key:'Dó#',deg:'IV',name:'F#7M',pos:[2,4,3,3,2,2],dig:[1,3,2,2,1,1]},
+            {key:'Dó#',deg:'V',name:'G#7',pos:[4,6,4,5,4,4],dig:[1,3,1,2,1,1]},
+            {key:'Dó#',deg:'VI',name:'A#m7',pos:[6,8,6,6,6,6],dig:[1,3,1,1,1,1]},
+            {key:'Dó#',deg:'VII',name:'B#m7(b5)',pos:[99,11,10,9,9,99],dig:[0,4,3,2,2,0]},
+            // Fá
+            {key:'Fá',deg:'I',name:'F7M',pos:[99,99,3,2,1,0],dig:[0,0,3,2,1,0]},
+            {key:'Fá',deg:'II',name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
+            {key:'Fá',deg:'III',name:'Am7',pos:[99,0,2,0,1,0],dig:[0,0,2,0,1,0]},
+            {key:'Fá',deg:'IV',name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
+            {key:'Fá',deg:'V',name:'C7',pos:[99,3,2,3,1,0],dig:[0,3,2,3,1,0]},
+            {key:'Fá',deg:'VI',name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
+            {key:'Fá',deg:'VII',name:'Em7(b5)',pos:[0,1,2,0,3,99],dig:[0,1,2,0,3,0]},
+            // Sib
+            {key:'Sib',deg:'I',name:'Bb7M',pos:[99,1,3,3,3,1],dig:[0,1,2,3,4,1]},
+            {key:'Sib',deg:'II',name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
+            {key:'Sib',deg:'III',name:'Dm7',pos:[99,99,0,2,1,1],dig:[0,0,0,2,1,1]},
+            {key:'Sib',deg:'IV',name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
+            {key:'Sib',deg:'V',name:'F7',pos:[1,3,1,2,1,1],dig:[1,3,1,2,1,1]},
+            {key:'Sib',deg:'VI',name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
+            {key:'Sib',deg:'VII',name:'Am7(b5)',pos:[99,1,2,0,3,99],dig:[0,1,2,0,3,0]},
+            // Mib
+            {key:'Mib',deg:'I',name:'Eb7M',pos:[99,99,1,3,2,0],dig:[0,0,1,3,2,0]},
+            {key:'Mib',deg:'II',name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
+            {key:'Mib',deg:'III',name:'Gm7',pos:[3,1,0,0,3,3],dig:[3,1,0,0,3,3]},
+            {key:'Mib',deg:'IV',name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
+            {key:'Mib',deg:'V',name:'Bb7',pos:[99,1,3,1,3,1],dig:[0,1,3,1,3,1]},
+            {key:'Mib',deg:'VI',name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
+            {key:'Mib',deg:'VII',name:'Dm7(b5)',pos:[99,99,0,1,1,99],dig:[0,0,0,1,1,0]},
+            // Láb
+            {key:'Láb',deg:'I',name:'Ab7M',pos:[99,99,3,2,1,0],dig:[0,0,4,3,2,1]},
+            {key:'Láb',deg:'II',name:'Bbm7',pos:[99,1,3,1,1,99],dig:[0,1,3,1,1,0]},
+            {key:'Láb',deg:'III',name:'Cm7',pos:[99,3,1,3,3,99],dig:[0,2,1,3,4,0]},
+            {key:'Láb',deg:'IV',name:'Db7M',pos:[99,4,3,3,2,99],dig:[0,3,2,2,1,0]},
+            {key:'Láb',deg:'V',name:'Eb7',pos:[99,99,1,3,2,3],dig:[0,0,1,3,2,3]},
+            {key:'Láb',deg:'VI',name:'Fm7',pos:[1,3,1,1,1,1],dig:[1,3,1,1,1,1]},
+            {key:'Láb',deg:'VII',name:'Gm7(b5)',pos:[3,99,3,4,4,99],dig:[1,0,1,2,3,0]}
+        ];
 
-        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-        const tonalitiesPT = ['Dó', 'Sol', 'Ré', 'Lá', 'Mi', 'Si', 'Fá#', 'Dó#', 'Fá', 'Sib', 'Mib', 'Láb'];
-        const tonalidadeIndex = {'Dó':0,'Sol':7,'Ré':2,'Lá':9,'Mi':4,'Si':11,'Fá#':6,'Dó#':1,'Fá':5,'Sib':10,'Mib':3,'Láb':8};
-        const graus = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+        let chords = {};
+        let fingeringsByName = {};
+        let currentPos = null;
+        let currentDig = null;
 
-        function renderFretboard(chordData) {
+        function getChordName(ton, grau, mod) {
+            const degIdx = graus.indexOf(grau);
+            if (degIdx === -1) return null;
+            const base = noteIndices[ton];
+            const steps = scaleSteps[mod];
+            const qualList = qualities[mod];
+            const offset = steps[degIdx];
+            const rootIdx = (base + offset) % 12;
+            const isSharpKey = sharpTonalities.includes(ton);
+            const noteNames = isSharpKey ? sharpNoteNames : flatNoteNames;
+            const root = noteNames[rootIdx];
+            const qual = qualList[degIdx];
+            return root + qual;
+        }
+
+        function generateDiagram() {
+            const ton = document.getElementById('tonalidade').value;
+            const grauSel = document.getElementById('grau').value;
+            const mod = document.getElementById('modo').value;
+            let displayName, pos, dig;
+
+            if (mod === 'Maior') {
+                const kd = ton + '-' + grauSel;
+                const chord = chords[kd];
+                if (chord) {
+                    displayName = chord.name;
+                    pos = chord.pos;
+                    dig = chord.dig;
+                } else {
+                    displayName = 'Acorde não encontrado';
+                    pos = null;
+                }
+            } else {
+                const compName = getChordName(ton, grauSel, mod);
+                displayName = compName;
+                const fing = fingeringsByName[compName];
+                if (fing) {
+                    pos = fing.pos;
+                    dig = fing.dig;
+                } else {
+                    displayName += ' - Consulte digitação';
+                    pos = null;
+                }
+            }
+
+            document.getElementById('chordName').textContent = displayName;
+            currentPos = pos;
+            currentDig = dig;
             const canvas = document.getElementById('fretboard');
             const ctx = canvas.getContext('2d');
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * window.devicePixelRatio;
-            canvas.height = rect.height * window.devicePixelRatio;
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (pos) {
+                drawDiagram(ctx, pos, dig, canvas.width, canvas.height);
+            }
+        }
 
-            // Wood background
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height / window.devicePixelRatio);
-            gradient.addColorStop(0, '#3c2f2f');
-            gradient.addColorStop(1, '#2c1810');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
-
-            const marginLeft = 70;
-            const marginTop = 80;
-            const marginRight = 30;
-            const marginBottom = 60;
-            const width = canvas.width / window.devicePixelRatio - marginLeft - marginRight;
-            const height = canvas.height / window.devicePixelRatio - marginTop - marginBottom;
-
-            const pos = [chordData.c6, chordData.c5, chordData.c4, chordData.c3, chordData.c2, chordData.c1];
-            const fingPos = [chordData.d6, chordData.d5, chordData.d4, chordData.d3, chordData.d2, chordData.d1];
+        function drawDiagram(ctx, pos, dig, w, h) {
+            // Compute maxFret and played
             let maxFret = 0;
-            pos.forEach((p, i) => {
+            for (let p of pos) {
                 if (p > 0) maxFret = Math.max(maxFret, p);
-            });
-            const fretCount = Math.max(5, maxFret + 1);
-            const stringSpacing = width / 5;
-            const fretSpacing = height / (fretCount + 1);
+            }
+            const numFrets = Math.max(5, maxFret);
+            const played = [];
+            for (let i = 0; i < 6; i++) {
+                if (pos[i] !== 99) played.push(i);
+            }
 
-            // Strings (vertical lines, thicker on left)
-            ctx.strokeStyle = '#111';
-            ctx.lineWidth = 3;
-            for (let s = 0; s < 6; s++) {
-                const x = marginLeft + s * stringSpacing;
-                ctx.lineWidth = 2 + s * 0.3; // thicker bass
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
+            const baseW = 400;
+            const scale = w / baseW;
+
+            const marginL = 50 * scale;
+            const marginR = 20 * scale;
+            const marginT = 70 * scale;
+            const marginB = 90 * scale;
+            const fbW = w - marginL - marginR;
+            const fbH = h - marginT - marginB;
+            const space = fbH / numFrets;
+
+            const yLines = [];
+            for (let k = 0; k <= numFrets; k++) {
+                yLines[k] = marginT + k * space;
+            }
+
+            const strGap = fbW / 5;
+            const strX = [];
+            for (let i = 0; i < 6; i++) {
+                strX[i] = marginL + i * strGap;
+            }
+
+            // Wood gradient background
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, '#5D4037');
+            grad.addColorStop(0.3, '#8D6E63');
+            grad.addColorStop(0.7, '#A1887F');
+            grad.addColorStop(1, '#D7CCC8');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Nut
+            ctx.strokeStyle = 'rgba(0,0,0,0.9)';
+            ctx.lineWidth = 6 * scale;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(marginL, yLines[0]);
+            ctx.lineTo(marginL + fbW, yLines[0]);
+            ctx.stroke();
+
+            // Frets
+            ctx.lineWidth = 3 * scale;
+            for (let k = 1; k <= numFrets; k++) {
                 ctx.beginPath();
-                ctx.moveTo(x, marginTop);
-                ctx.lineTo(x, marginTop + height);
+                ctx.moveTo(marginL, yLines[k]);
+                ctx.lineTo(marginL + fbW, yLines[k]);
                 ctx.stroke();
             }
 
-            // Nut and frets (horizontal)
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = '#333';
-            ctx.lineCap = 'butt';
-            ctx.beginPath();
-            ctx.moveTo(marginLeft, marginTop);
-            ctx.lineTo(marginLeft + width, marginTop);
-            ctx.stroke();
-
-            ctx.lineWidth = 2.5;
-            for (let f = 1; f <= fretCount; f++) {
-                const y = marginTop + f * fretSpacing;
-                ctx.beginPath();
-                ctx.moveTo(marginLeft, y);
-                ctx.lineTo(marginLeft + width, y);
-                ctx.stroke();
+            // Strings (only played)
+            ctx.strokeStyle = 'rgba(101,67,33,0.8)';
+            for (let i = 0; i < 6; i++) {
+                if (pos[i] !== 99) {
+                    ctx.lineWidth = (4 - i * 0.4) * scale;
+                    ctx.beginPath();
+                    ctx.moveTo(strX[i], yLines[0]);
+                    ctx.lineTo(strX[i], yLines[numFrets]);
+                    ctx.stroke();
+                }
             }
 
             // Fret numbers on left
-            ctx.fillStyle = '#ddd';
-            ctx.font = 'bold 20px Arial';
+            ctx.fillStyle = 'black';
+            ctx.font = `bold ${16 * scale}px sans-serif`;
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            for (let f = 1; f <= fretCount; f++) {
-                const y = marginTop + f * fretSpacing;
-                ctx.fillText(f.toString(), marginLeft - 15, y);
+            for (let f = 1; f <= numFrets; f++) {
+                ctx.fillText(f.toString(), marginL - 8 * scale, yLines[f]);
             }
 
-            // Top labels: strum order and X
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-            let strumCount = 0;
-            for (let s = 0; s < 6; s++) {
-                const x = marginLeft + s * stringSpacing;
-                const yTop = marginTop - 15;
-                if (pos[s] === 99) {
-                    ctx.font = 'bold 32px Arial';
-                    ctx.fillStyle = '#fff';
-                    ctx.fillText('×', x, yTop);
-                } else {
-                    strumCount++;
-                    // Black circle with number
-                    ctx.fillStyle = '#000';
-                    ctx.beginPath();
-                    ctx.arc(x, yTop, 16, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.fillStyle = '#fff';
-                    ctx.font = 'bold 20px Arial';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(strumCount.toString(), x, yTop);
-                }
-            }
-
-            // Open O at nut
-            for (let s = 0; s < 6; s++) {
-                if (pos[s] === 0) {
-                    const x = marginLeft + s * stringSpacing;
-                    const yNut = marginTop + 8;
-                    ctx.fillStyle = '#fff';
-                    ctx.font = 'bold 22px Arial';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('O', x, yNut);
-                }
-            }
-
-            // Red finger positions
+            // Top indicators
+            const yTop = marginT - 35 * scale;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            for (let s = 0; s < 6; s++) {
-                if (pos[s] > 0) {
-                    const x = marginLeft + s * stringSpacing;
-                    const y = marginTop + pos[s] * fretSpacing;
-                    // Red circle
-                    ctx.fillStyle = '#dc3545';
-                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                    ctx.shadowBlur = 5;
+            for (let i = 0; i < 6; i++) {
+                const cx = strX[i];
+                const cy = yTop;
+                if (pos[i] === 99) {
+                    // ×
+                    ctx.font = `bold ${28 * scale}px Arial`;
+                    ctx.fillStyle = 'black';
+                    ctx.fillText('×', cx, cy);
+                } else {
+                    // Strum seq circle
+                    const seq = played.indexOf(i) + 1;
+                    ctx.fillStyle = 'black';
                     ctx.beginPath();
-                    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                    ctx.arc(cx, cy, 14 * scale, 0, 2 * Math.PI);
                     ctx.fill();
-                    ctx.shadowBlur = 0;
+                    // Number
+                    ctx.fillStyle = 'white';
+                    ctx.font = `bold ${20 * scale}px Arial`;
+                    ctx.fillText(seq.toString(), cx, cy);
+                }
+            }
+
+            // Open strings O
+            ctx.font = `bold ${20 * scale}px Arial`;
+            ctx.fillStyle = 'white';
+            for (let i = 0; i < 6; i++) {
+                if (pos[i] === 0) {
+                    ctx.fillText('O', strX[i], yLines[0] + space * 0.5);
+                }
+            }
+
+            // Finger positions
+            for (let i = 0; i < 6; i++) {
+                if (pos[i] > 0) {
+                    const fy = yLines[pos[i]];
+                    const fx = strX[i];
+                    // Red circle
+                    ctx.fillStyle = 'red';
+                    ctx.beginPath();
+                    ctx.arc(fx, fy, 12 * scale, 0, 2 * Math.PI);
+                    ctx.fill();
                     // Finger number
-                    const finger = fingPos[s];
-                    if (finger > 0) {
-                        ctx.fillStyle = '#fff';
-                        ctx.font = 'bold 14px Arial';
-                        ctx.fillText(finger.toString(), x, y + 1);
+                    if (dig[i] > 0) {
+                        ctx.fillStyle = 'white';
+                        ctx.font = `bold ${16 * scale}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(dig[i].toString(), fx, fy);
                     }
                 }
             }
 
-            // Bottom string labels
-            ctx.textBaseline = 'top';
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 20px Arial';
-            for (let s = 0; s < 6; s++) {
-                const x = marginLeft + s * stringSpacing;
-                const yBottom = marginTop + height + 15;
-                if (pos[s] === 99) {
-                    ctx.font = 'bold 26px Arial';
-                    ctx.fillText('×', x, yBottom);
+            // Bottom string numbers / ×
+            const yBot1 = yLines[numFrets] + 25 * scale;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `bold ${18 * scale}px Arial`;
+            ctx.fillStyle = 'black';
+            for (let i = 0; i < 6; i++) {
+                const tx = strX[i];
+                if (pos[i] === 99) {
+                    ctx.fillText('×', tx, yBot1);
                 } else {
-                    ctx.font = 'bold 20px Arial';
-                    ctx.fillText((6 - s).toString(), x, yBottom);
+                    const strN = 6 - i;
+                    ctx.fillText(strN.toString(), tx, yBot1);
+                }
+            }
+
+            // String letters (played only)
+            const yBot2 = yBot1 + 25 * scale;
+            ctx.font = `${16 * scale}px Arial`;
+            for (let i = 0; i < 6; i++) {
+                if (pos[i] !== 99) {
+                    ctx.fillText(stringLetters[i], strX[i], yBot2);
                 }
             }
         }
 
-        function generateDiagram() {
-            const tonalidadeSel = document.getElementById('tonalidade');
-            const grauSel = document.getElementById('grau');
-            const modoSel = document.getElementById('modo');
-            const chordInfo = document.getElementById('chordInfo');
+        function resizeCanvas() {
             const canvas = document.getElementById('fretboard');
-
-            const tonalidade = tonalidadeSel.value;
-            const grau = grauSel.value;
-            const modo = modoSel.value;
-
-            let chordData = null;
-            let displayC = '';
-            let displayTp = '';
-
-            if (modo === 'Maior') {
-                chordData = majorChords.find(ch => ch.t === tonalidade && ch.g === grau);
-                if (chordData) {
-                    chordInfo.innerHTML = `${chordData.t} ${chordData.g} ${chordData.c} ${chordData.tp}`;
-                }
-            } else {
-                const tonicSemi = tonalidadeIndex[tonalidade];
-                const grauIdx = graus.indexOf(grau);
-                const scaleIntervals = scales[modo];
-                const chordRootSemi = (tonicSemi + scaleIntervals[grauIdx]) % 12;
-                const rootEng = noteNames[chordRootSemi];
-                const quality = chordQualities[modo][grauIdx];
-                displayC = rootEng + quality;
-                displayTp = chordTypeNames[quality] || quality;
-                chordData = majorChords.find(ch => ch.c === displayC);
-                if (chordData) {
-                    chordInfo.innerHTML = `${tonalidade} ${grau} ${displayC} ${displayTp}`;
-                }
+            const maxW = Math.min(500, window.innerWidth * 0.9);
+            const scaleFactor = maxW / 400;
+            canvas.width = maxW;
+            canvas.height = 450 * scaleFactor;
+            if (currentPos) {
+                drawDiagram(canvas.getContext('2d'), currentPos, currentDig, canvas.width, canvas.height);
             }
-
-            if (!chordData) {
-                chordInfo.innerHTML = `Consulte digitação para ${displayC}`;
-                canvas.style.display = 'none';
-                return;
-            }
-
-            canvas.style.display = 'block';
-            renderFretboard(chordData);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const tonalidadeSel = document.getElementById('tonalidade');
-            tonalitiesPT.forEach(t => {
+        window.onload = function() {
+            // Populate tonalidade
+            const selTon = document.getElementById('tonalidade');
+            tonalidades.forEach(t => {
                 const opt = document.createElement('option');
                 opt.value = t;
                 opt.textContent = t;
-                tonalidadeSel.appendChild(opt);
+                selTon.appendChild(opt);
             });
-            tonalidadeSel.value = 'Dó';
 
-            const grauSel = document.getElementById('grau');
-            graus.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g;
-                opt.textContent = g;
-                grauSel.appendChild(opt);
+            // Init chords
+            chordList.forEach(c => {
+                const kd = c.key + '-' + c.deg;
+                chords[kd] = {
+                    name: c.name,
+                    pos: [...c.pos],
+                    dig: [...c.dig]
+                };
+                if (!fingeringsByName[c.name]) {
+                    fingeringsByName[c.name] = {
+                        pos: [...c.pos],
+                        dig: [...c.dig]
+                    };
+                }
             });
-            grauSel.value = 'I';
 
-            const modoSel = document.getElementById('modo');
-            Object.keys(scales).forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m;
-                opt.textContent = m;
-                modoSel.appendChild(opt);
-            });
-            modoSel.value = 'Maior';
+            // Events
+            document.getElementById('gerar').onclick = generateDiagram;
+            window.addEventListener('resize', resizeCanvas);
 
-            document.getElementById('generate').addEventListener('click', generateDiagram);
-
-            // Initial render
+            // Default
+            selTon.value = 'Dó';
             generateDiagram();
-        });
-
-        window.addEventListener('resize', () => {
-            const canvas = document.getElementById('fretboard');
-            if (canvas.style.display !== 'none') {
-                // Re-render if visible, but needs current chord - skip for simplicity
-            }
-        });
+        };
     </script>
 </body>
 </html>
